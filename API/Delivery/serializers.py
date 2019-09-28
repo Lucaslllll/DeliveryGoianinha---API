@@ -17,8 +17,8 @@ class UserSerializer(serializers.ModelSerializer):
 class RestauranteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Restaurante
-        fields = ['id', 'nome', 'cnpj', 'classificacao', 'localizacao', 'descricao_breve', 'descricao_longa', 'status',
-                  'telefone', 'cardapio' ]
+        fields = ['id', 'nome', 'cnpj', 'localizacao', 'descricao_breve', 'descricao_longa', 'status',
+                  'telefone' ]
 
         
 

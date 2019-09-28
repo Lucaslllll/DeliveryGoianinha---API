@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.urls import include
-from . import api
+from . import api, views
 from knox import views as knox_views
 
 urlpatterns = [
@@ -8,6 +8,6 @@ urlpatterns = [
 	url(r'^api/auth/registrar$', api.RegistrarAPI.as_view()),
 	url(r'^api/auth/login$', api.LoginAPI.as_view()),
 	url(r'^api/auth/user$', api.UserAPI.as_view()),
-	url(r'^api/auth/logout$', knox_views.LogoutView.as_view(), name='knox_logout'),
-
+	url(r'logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
+	url(r'logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
 ]

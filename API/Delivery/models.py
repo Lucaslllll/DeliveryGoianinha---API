@@ -15,6 +15,9 @@ def get_path_comida(self, instance, filename):
 class Ingredientes(models.Model):
     nome = models.CharField(max_length=120)
 
+    def __str__(self):
+        return self.nome
+
 class Comida(models.Model):
     nome = models.CharField(max_length=120)
     ingredientes = models.ManyToManyField(Ingredientes)
@@ -30,6 +33,8 @@ class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     localizacao = models.CharField(max_length=500)
     
+    def __str__(self):
+        return self.nome.username
 
 class Restaurante(models.Model):
     nome = models.CharField(max_length=500)
@@ -41,10 +46,15 @@ class Restaurante(models.Model):
     status = models.BooleanField(default=True, null=True)
     telefone = PhoneNumberField(region='BR')
 
+    def __str__(self):
+        return self.nome
+
 class Cardapio(models.Model):
     restaurante = models.OneToOneField(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
     comidas = models.ManyToManyField(Comida)
 
+    def __str__(self):
+        return self.restaurante.nome+" "+self.comidas.nome
 
 class Classificacao_Usuario(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, blank=True, null=True)
@@ -83,6 +93,9 @@ class Pedido(models.Model):
     unidades = models.IntegerField()
     entrega = models.DateTimeField()
 
+    def __str__(self):
+        return self.nome
+
 
 class Pedido_Restaurante(models.Model):
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -95,7 +108,8 @@ class Comentario(models.Model):
     titulo = models.CharField(max_length=100)
     descricao = models.CharField(max_length=1000)
 
-
+    def __str__(self):
+        return self.titulo
 
 
 

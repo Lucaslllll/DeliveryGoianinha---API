@@ -62,8 +62,22 @@ cloudinary.config(
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'knox.auth.TokenAuthentication', 
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }
+
+from datetime import timedelta
+
+REST_KNOX = {
+    'USER_SERIALIZER': 'accounts.serializers.UserSerializer',
+    'TOKEN_TTL': timedelta(hours = 24+7),
+}
+
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
