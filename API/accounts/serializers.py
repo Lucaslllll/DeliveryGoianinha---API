@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 # serializer para registro
 class RegisterSerializer(serializers.ModelSerializer):
     User._meta.get_field('email')._unique = True
+    User._meta.get_field('username')._unique = True
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password')
