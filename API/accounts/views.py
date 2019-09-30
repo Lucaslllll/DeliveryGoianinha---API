@@ -1,6 +1,7 @@
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework import generics, permissions
 
 class CustomAuthToken(ObtainAuthToken):
 
@@ -15,3 +16,11 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key,
         
         })
+
+
+# receberá um token e id e irá pegar um token no db
+class VerifyToken(generics.GenericAPIView):
+
+	def post(self, request, *args, **kwargs):
+
+		serializer = self.serializer_class(data=request.data, context={'request': request})
