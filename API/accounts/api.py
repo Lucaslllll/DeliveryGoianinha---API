@@ -15,7 +15,7 @@ class RegistrarAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        token = Token.objects.create(user=user_)
+        token = Token.objects.create(user=user)
         return Response({
 
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
