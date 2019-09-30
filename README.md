@@ -11,6 +11,7 @@
 - pip install django-cors-headers
 - pip install django-rest-knox
 - pip install cloudinary
+- pip install django-rest-auth
 
 # urls
 
