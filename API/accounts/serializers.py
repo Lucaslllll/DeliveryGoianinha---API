@@ -43,4 +43,5 @@ class VerifySerializer(serializers.Serializer):
     pk = serializers.CharField()
     token = serializers.CharField()
     
-   
+class LogoutSerializer(serializers.Serializer):
+    pk = serializers.CharField()

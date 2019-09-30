@@ -8,8 +8,7 @@ urlpatterns = [
 	url(r'^api/auth/register$', api.RegistrarAPI.as_view()),
 	url(r'^api/auth/login$', api.LoginAPI.as_view()),
 	url(r'^api/auth/user$', api.UserAPI.as_view()),
-	url(r'^logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
-	url(r'^logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
+	url(r'^logout/', api.Logout.as_view()),
 	url(r'^api-token-auth/', views.CustomAuthToken.as_view()),
 	url(r'^verify-token/', api.VerifyToken.as_view())
 ]

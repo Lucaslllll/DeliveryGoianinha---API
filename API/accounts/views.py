@@ -18,9 +18,3 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 
-# receberá um token e id e irá pegar um token no db
-class VerifyToken(generics.GenericAPIView):
-
-	def post(self, request, *args, **kwargs):
-
-		serializer = self.serializer_class(data=request.data, context={'request': request})

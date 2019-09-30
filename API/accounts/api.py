@@ -2,8 +2,10 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 #from knox.models import AuthToken
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, VerifySerializer
+from .serializers import (UserSerializer, RegisterSerializer, LoginSerializer, 
+                          VerifySerializer, LogoutSerializer)
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 
 # API do registro
@@ -70,18 +72,29 @@ class VerifyToken(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         pk = serializer.data['pk']
-        print(pk)
+        token = serializer.data['token']
         token_ = Token.objects.get(user=pk)
-        if serializer.data['token'] == token_:
+        if token == token_.key:
             return Response("Verdadeiro",)
         else:
             return Response("Falso",)
 
+# receberá somente um id
+class Logout(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
 
+    def post(self, request, *args, **kwargs):
 
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
 
-
-
+        pk = serializer.data['pk']
+        token = Token.objects.filter(user=pk)
+        token_ = get_object_or_404(token, user=pk)
+        
+        token_.delete()
+        return Response("Logout feito com sucesso!")
+        
 # def get_post_response_data(self, request, token, instance):
 #         UserSerializer = self.get_user_serializer_class()
 
