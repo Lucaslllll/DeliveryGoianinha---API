@@ -38,3 +38,9 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Dados errados")
 
 
+
+class VerifySerializer(serializers.Serializer):
+    pk = serializers.CharField()
+    token = serializers.CharField()
+    
+   

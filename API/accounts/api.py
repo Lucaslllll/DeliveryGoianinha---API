@@ -2,7 +2,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 #from knox.models import AuthToken
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, VerifySerializer
 from django.contrib.auth.models import User
 
 
@@ -62,14 +62,17 @@ class UserAPI(generics.RetrieveAPIView):
 
 # receberá um token e id e irá pegar um token no db
 class VerifyToken(generics.GenericAPIView):
+    serializer_class = VerifySerializer
 
     def post(self, request, *args, **kwargs):
 
         serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
 
-        pk = request.data['pk']
-        token_ = Token.objects.get(pk=pk)
-        if token == token_:
+        pk = serializer.data['pk']
+        print(pk)
+        token_ = Token.objects.get(user=pk)
+        if serializer.data['token'] == token_:
             return Response("Verdadeiro",)
         else:
             return Response("Falso",)
