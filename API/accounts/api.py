@@ -73,11 +73,12 @@ class VerifyToken(generics.GenericAPIView):
 
         pk = serializer.data['pk']
         token = serializer.data['token']
-        token_ = Token.objects.get(user=pk)
+        token_f = Token.objects.filter(user=pk)
+        token_ = get_object_or_404(token_f, user=pk)
         if token == token_.key:
-            return Response("Verdadeiro",)
+            return Response(True,)
         else:
-            return Response("Falso",)
+            return Response(False,)
 
 # receberá somente um id
 class Logout(generics.GenericAPIView):
