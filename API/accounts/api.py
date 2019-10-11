@@ -34,17 +34,23 @@ class LoginAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # print("ooooooooooooooppaaa"+str(serializer.validated_data))
+        
         user = serializer.validated_data
 
-        user_ = User.objects.get(username=user)
-        token = Token.objects.create(user=user_)
-        
-        return Response({
+        try:
+            user_ = User.objects.get(username=user)
+        except User.DoesNotExist:
+            user_ = None
 
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": token.key
-        })
+        if user_ != None:
+            token = Token.objects.create(user=user_)
+            return Response({
+
+                "user": UserSerializer(user, context=self.get_serializer_context()).data,
+                "token": token.key
+            })
+        else:
+            return Response("email inválido")
 
 
     

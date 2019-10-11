@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from rest_framework.response import Response
 from rest_auth.serializers import UserDetailsSerializer
 
 
@@ -28,15 +29,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 # serializer para autenticação
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
-        user = authenticate(**data)
-        if user and user.is_active:
-             return user
-        raise serializers.ValidationError("Dados errados")
+        email = data['email']
 
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
+
+        if user != None:
+            user = authenticate(username=user.username, password=data['password'])
+            if user and user.is_active:
+                 return user
+            raise serializers.ValidationError("Dados errados")
+        else:
+            raise serializers.ValidationError("Dados errados")
 
 
 class VerifySerializer(serializers.Serializer):
