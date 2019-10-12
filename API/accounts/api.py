@@ -38,12 +38,19 @@ class LoginAPI(generics.GenericAPIView):
         user = serializer.validated_data
 
         user_ = User.objects.get(username=user)
-        token = Token.objects.create(user=user_)
         
+        try: 
+            token = Token.objects.create(user=user_)
+        except: 
+            return Response({
+                "estado": False
+            })
+
         return Response({
 
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": token.key
+            "token": token.key,
+            "estado": True
         })
 
 
@@ -75,6 +82,8 @@ class VerifyToken(generics.GenericAPIView):
         token = serializer.data['token']
         token_f = Token.objects.filter(user=pk)
         token_ = get_object_or_404(token_f, user=pk)
+        
+
         if token == token_.key:
             return Response(True,)
         else:
