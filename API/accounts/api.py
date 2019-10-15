@@ -43,6 +43,7 @@ class LoginAPI(generics.GenericAPIView):
             token = Token.objects.create(user=user_)
         except: 
             return Response({
+                "id": user_.id,
                 "estado": False
             })
 
