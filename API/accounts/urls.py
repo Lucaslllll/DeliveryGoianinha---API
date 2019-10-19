@@ -1,10 +1,8 @@
 from django.conf.urls import url
 from django.urls import include
 from . import api, views
-from knox import views as knox_views
 
 urlpatterns = [
-	url(r'api/auth', include('knox.urls')),
 	url(r'^api/auth/register$', api.RegistrarAPI.as_view()),
 	url(r'^api/auth/login$', api.LoginAPI.as_view()),
 	url(r'^api/auth/user$', api.UserAPI.as_view()),

@@ -40,7 +40,7 @@ class Restaurante(models.Model):
     nome = models.CharField(max_length=500)
     cnpj = models.IntegerField(null=True)
     email = models.EmailField(null=True)
-    slug = models.SlugField(max_length=15)
+    slug = models.SlugField(max_length=15, unique=True)
     localizacao = models.CharField(max_length=1000)
     descricao_breve = models.CharField(max_length=100, null=True)
     descricao_longa = models.CharField(max_length=500, null=True)
@@ -58,14 +58,14 @@ class Cardapio(models.Model):
         return self.restaurante.nome+" "+self.comidas.nome
 
 class Classificacao_Usuario(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, blank=True, null=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     nota = models.IntegerField()
     
     def __str__(self):
         return str(self.nota)
 
 class Classificacao_Restaurante(models.Model):
-    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
     nota = models.IntegerField()
     
     def __str__(self):
@@ -106,6 +106,7 @@ class Pedido_Restaurante(models.Model):
 
 class Comentario(models.Model):
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE, blank=True, null=True)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
     titulo = models.CharField(max_length=100)
     descricao = models.CharField(max_length=1000)
 

@@ -100,11 +100,17 @@ class Logout(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         pk = serializer.data['pk']
-        token = Token.objects.filter(user=pk)
-        token_ = get_object_or_404(token, user=pk)
-        
-        token_.delete()
-        return Response("Logout feito com sucesso!")
+
+        try:
+            token = Token.objects.get(user=pk)
+        except Token.DoesNotExist:
+            token = None
+
+        if token == None:
+            return Response("Logout já feito!")
+        else:    
+            token_.delete()
+            return Response("Logout feito com sucesso!")
         
 # def get_post_response_data(self, request, token, instance):
 #         UserSerializer = self.get_user_serializer_class()

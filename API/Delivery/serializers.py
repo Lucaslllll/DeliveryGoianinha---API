@@ -14,11 +14,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = models.User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
-class RestauranteSerializer(serializers.ModelSerializer):
+class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Restaurante
-        fields = ['id', 'nome', 'cnpj', 'slug' ,'localizacao', 'descricao_breve', 'descricao_longa', 'status',
-                  'telefone' ]
+        fields = ('id', 'nome', 'cnpj', 'slug' ,'localizacao', 'descricao_breve', 
+                  'descricao_longa', 'status', 'telefone', )
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
 
         
 
@@ -43,10 +47,11 @@ class ClassificacaoUsuarioSerializer(serializers.ModelSerializer):
         model = models.Classificacao_Usuario
         fields = '__all__'
 
-class ClassificacaoRestauranteSerializer(serializers.ModelSerializer):
+class ClassificacaoRestauranteSerializer(serializers.Serializer):
     class Meta:
-        model = models.Classificacao_Restaurante
-        fields = '__all__'
+        model = models.Restaurante
+        fields = ('id', )
+        
 
 class FotosRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
