@@ -30,7 +30,7 @@ SECRET_KEY = '1jger2df7+ko+bj)mob+x3oyd__g@9yvnkh83v0ko_cf#sw6xx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.8', '10.40.3.60', '10.41.1.25']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.8', '10.0.0.110', '10.41.1.25']
 
 
 # Application definition
@@ -59,6 +59,11 @@ cloudinary.config(
     api_secret="KF0puzA_bQq-9mXViiOJdiYDNNU"
 )
 
+
+# add host and port of react
+CORS_ORIGIN_WHITELIST  =  [ 
+    "http://127.0.0.1:3000",
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

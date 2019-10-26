@@ -87,3 +87,13 @@ class CardapioSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Cardapio
         fields = '__all__'
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tags
+        fields = '__all__'
+
+class TagRestauranteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tags
+        fields = ['id']

@@ -50,6 +50,19 @@ class Restaurante(models.Model):
     def __str__(self):
         return self.nome
 
+class Tags(models.Model):
+    nome = models.CharField(max_length=500)
+    
+    def __str__(self):
+        return self.nome    
+
+class Restaurante_Tag(models.Model):
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.tag.nome+" "+self.restaurante.nome
+
 class Cardapio(models.Model):
     restaurante = models.OneToOneField(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
     comidas = models.ManyToManyField(Comida)
@@ -102,6 +115,9 @@ class Pedido_Restaurante(models.Model):
     cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
+
+
+
     
 
 class Comentario(models.Model):

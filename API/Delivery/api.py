@@ -4,24 +4,10 @@ from rest_framework.response import Response
 from .serializers import (UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
 						 ClassificacaoRestauranteSerializer, ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer,
                          CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
-                         ComentarioSerializer)
+                         ComentarioSerializer, TagRestauranteSerializer, TagSerializer)
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
                     Fotos_Comida, Fotos_Restaurante, Ingredientes, Comida, Cardapio,
-                    Pedido, Pedido_Restaurante, Comentario)
-
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     permissions_classes = [
-#         permissions.IsAuthenticated
-#     ]
-#     serializer_class = UserSerializer
-
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
-
-# class UsuarioViewSet(viewsets.ModelViewSet):
-#     queryset = Usuario.objects.all()
-#     serializer_class = UsuarioSerializer
+                    Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags)
 
 
 class RestauranteViewSet(viewsets.ModelViewSet):
@@ -93,3 +79,35 @@ class ComentarioViewSet(viewsets.ModelViewSet):
     queryset = Comentario.objects.all()
     serializer_class = ComentarioSerializer
 
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tags.objects.all()
+    serializer_class = TagSerializer
+
+class TagRestauranteViewSet(viewsets.ModelViewSet):
+    queryset = Restaurante_Tag.objects.all()
+    serializer_class = TagRestauranteSerializer
+        
+class FiltrarTagRestaurante(generics.RetrieveAPIView):
+    queryset = Tags.objects.all()
+    serializer_class= TagRestauranteSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            tags = Tags.objects.get(nome=kwargs['nome'])
+            restaurante_tag = Restaurante_Tag.objects.filter(tag=tags.pk)
+            restaurantes = Restaurante.objects.filter(pk=restaurante_tag.pk)
+
+        else:
+            classificacao = None
+
+        if self.queryset == None:
+            return Response("Sem dados")
+        else:
+            dic = {}
+            for x in restaurantes.nome:
+                dic["restaurantes"]: restaurantes.nome
+            return Response({
+                "restaurantes": dic
+                })

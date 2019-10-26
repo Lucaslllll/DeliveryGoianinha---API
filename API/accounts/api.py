@@ -1,6 +1,5 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-#from knox.models import AuthToken
 from rest_framework.authtoken.models import Token
 from .serializers import (UserSerializer, RegisterSerializer, LoginSerializer, 
                           VerifySerializer, LogoutSerializer)
@@ -58,14 +57,21 @@ class LoginAPI(generics.GenericAPIView):
     
 
 # API para pegar user
-class UserAPI(generics.RetrieveAPIView):
-    permission_classes = [
-        permissions.IsAuthenticated,
-    ]
+class UserAPI(generics.GenericAPIView):
     serializer_class = UserSerializer
 
-    def get_object(self):
-        return self.request.user
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data
+
+        return Response({
+            "id": user.pk,
+            "username": user.username,
+            "email": user.email
+
+        })
     
 
 
@@ -75,17 +81,13 @@ class VerifyToken(generics.GenericAPIView):
     serializer_class = VerifySerializer
 
     def post(self, request, *args, **kwargs):
-
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
 
-        pk = serializer.data['pk']
-        token = serializer.data['token']
-        token_f = Token.objects.filter(user=pk)
-        token_ = get_object_or_404(token_f, user=pk)
-        
+        token = request.data['token']
+        get_token = serializer.validated_data
 
-        if token == token_.key:
+        if get_token == token:
             return Response(True,)
         else:
             return Response(False,)
@@ -109,7 +111,7 @@ class Logout(generics.GenericAPIView):
         if token == None:
             return Response("Logout já feito!")
         else:    
-            token_.delete()
+            token.delete()
             return Response("Logout feito com sucesso!")
         
 # def get_post_response_data(self, request, token, instance):
