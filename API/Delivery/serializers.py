@@ -47,7 +47,12 @@ class ClassificacaoUsuarioSerializer(serializers.ModelSerializer):
         model = models.Classificacao_Usuario
         fields = '__all__'
 
-class ClassificacaoRestauranteSerializer(serializers.Serializer):
+class ClassificacaoRestauranteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Classificacao_Restaurante
+        fields = '__all__'
+
+class ClassificacaoRestauranteFNSerializer(serializers.Serializer):
     class Meta:
         model = models.Restaurante
         fields = ('id', )

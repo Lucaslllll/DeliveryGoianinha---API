@@ -40,7 +40,7 @@ class Restaurante(models.Model):
     nome = models.CharField(max_length=500)
     cnpj = models.IntegerField(null=True)
     email = models.EmailField(null=True)
-    slug = models.SlugField(max_length=15, unique=True)
+    slug = models.SlugField(max_length=1000, unique=True)
     localizacao = models.CharField(max_length=1000)
     descricao_breve = models.CharField(max_length=100, null=True)
     descricao_longa = models.CharField(max_length=500, null=True)

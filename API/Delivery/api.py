@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from .serializers import (UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
-						 ClassificacaoRestauranteSerializer, ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer,
+						 ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
+                         ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer, 
                          CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
                          ComentarioSerializer, TagRestauranteSerializer, TagSerializer)
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
@@ -22,14 +23,19 @@ class ClassificacaoRestauranteViewSet(viewsets.ModelViewSet):
 
 class ClassificacaoRestauranteFinal(generics.RetrieveAPIView):
     queryset = Classificacao_Restaurante.objects.all()
-    serializer_class = ClassificacaoRestauranteSerializer
+    serializer_class = ClassificacaoRestauranteFNSerializer
 
 
     def retrieve(self, request, *args, **kwargs):
         if bool(self.get_queryset()):
             serializer = self.serializer_class(data=request.data, context={'request':request})
             serializer.is_valid(raise_exception=True)
-            restaurante = Restaurante.objects.get(nome=kwargs['restaurante'])
+
+            try:
+                restaurante = Restaurante.objects.get(slug=kwargs['restaurante_slug'])
+            except Restaurante.DoesNotExist:
+                return Response("Não existe restaurante")
+
             classificacao = Classificacao_Restaurante.objects.filter(restaurante=restaurante.pk)
         else:
             classificacao = None
@@ -40,11 +46,13 @@ class ClassificacaoRestauranteFinal(generics.RetrieveAPIView):
             media = 0
             # list to use len()
             cr = list(classificacao)
-    
+            
+            n = 0 
             for x in range(0, len(cr)):
+                n += 1
                 nota = cr[x].nota
                 media += nota
-            media /= 5
+            media /= n
 
             return Response({
                 "restaurante": restaurante.nome,
