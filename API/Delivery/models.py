@@ -36,6 +36,13 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nome.username
 
+
+class Tags(models.Model):
+    nome = models.CharField(max_length=500, unique=True)
+    
+    def __str__(self):
+        return self.nome
+
 class Restaurante(models.Model):
     nome = models.CharField(max_length=500)
     cnpj = models.IntegerField(null=True)
@@ -46,15 +53,10 @@ class Restaurante(models.Model):
     descricao_longa = models.CharField(max_length=500, null=True)
     status = models.BooleanField(default=True, null=True)
     telefone = PhoneNumberField(region='BR')
+    # tags = models.ManyToManyField(Tags, through='Restaurante_Tag')
 
     def __str__(self):
         return self.nome
-
-class Tags(models.Model):
-    nome = models.CharField(max_length=500)
-    
-    def __str__(self):
-        return self.nome    
 
 class Restaurante_Tag(models.Model):
     tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
@@ -62,6 +64,7 @@ class Restaurante_Tag(models.Model):
 
     def __str__(self):
         return self.tag.nome+" "+self.restaurante.nome
+
 
 class Cardapio(models.Model):
     restaurante = models.OneToOneField(Restaurante, on_delete=models.CASCADE, blank=True, null=True)

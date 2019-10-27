@@ -1,22 +1,26 @@
 from rest_framework import serializers
-from . import models
+from .models import (
+    Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
+    Fotos_Comida, Fotos_Restaurante, Ingredientes, Comida, Cardapio,
+    Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags
+)
 from django.contrib.auth.models import User
 from cloudinary.templatetags import cloudinary
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Usuario
+        model = Usuario
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.User
+        model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
 class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Restaurante
+        model = Restaurante
         fields = ('id', 'nome', 'cnpj', 'slug' ,'localizacao', 'descricao_breve', 
                   'descricao_longa', 'status', 'telefone', )
         lookup_field = 'slug'
@@ -28,39 +32,39 @@ class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Pedido
+        model = Pedido
         fields = '__all__'
 
 class PedidoRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Pedido_Restaurante
+        model = Pedido_Restaurante
         fields = '__all__'
 
 class ComentarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Comentario
+        model = Comentario
         fields = '__all__'
 
 
 class ClassificacaoUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Classificacao_Usuario
+        model = Classificacao_Usuario
         fields = '__all__'
 
 class ClassificacaoRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Classificacao_Restaurante
+        model = Classificacao_Restaurante
         fields = '__all__'
 
 class ClassificacaoRestauranteFNSerializer(serializers.Serializer):
     class Meta:
-        model = models.Restaurante
+        model = Restaurante
         fields = ('id', )
         
 
 class FotosRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Fotos_Restaurante
+        model = Fotos_Restaurante
         fields = '__all__'
 
     def to_representation(self, instance):
@@ -70,7 +74,7 @@ class FotosRestauranteSerializer(serializers.ModelSerializer):
 
 class FotosComidaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Fotos_Comida
+        model = Fotos_Comida
         fields = '__all__'
 
     def to_representation(self, instance):
@@ -80,25 +84,32 @@ class FotosComidaSerializer(serializers.ModelSerializer):
 
 class IngredientesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Ingredientes
+        model = Ingredientes
         fields = '__all__'
 
 class ComidaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Comida
+        model = Comida
         fields = '__all__'
 
 class CardapioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Cardapio
+        model = Cardapio
         fields = '__all__'
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Tags
+        model = Tags
         fields = '__all__'
 
 class TagRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Tags
+        model = Restaurante_Tag
+        fields = '__all__'
+
+
+class TagRestauranteFiltrarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tags
         fields = ['id']
+

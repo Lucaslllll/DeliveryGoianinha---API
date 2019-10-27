@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
-from .serializers import (UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
-						 ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
-                         ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer, 
-                         CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
-                         ComentarioSerializer, TagRestauranteSerializer, TagSerializer)
+from .serializers import (
+    UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
+    ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
+    ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer, 
+    CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
+    ComentarioSerializer, TagRestauranteSerializer, TagSerializer, TagRestauranteFiltrarSerializer, 
+)
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
                     Fotos_Comida, Fotos_Restaurante, Ingredientes, Comida, Cardapio,
                     Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags)
@@ -95,27 +97,42 @@ class TagRestauranteViewSet(viewsets.ModelViewSet):
     queryset = Restaurante_Tag.objects.all()
     serializer_class = TagRestauranteSerializer
         
+
 class FiltrarTagRestaurante(generics.RetrieveAPIView):
     queryset = Tags.objects.all()
-    serializer_class= TagRestauranteSerializer
+    serializer_class= TagRestauranteFiltrarSerializer
 
     def retrieve(self, request, *args, **kwargs):
         if bool(self.get_queryset()):
             serializer = self.serializer_class(data=request.data, context={'request':request})
             serializer.is_valid(raise_exception=True)
-            tags = Tags.objects.get(nome=kwargs['nome'])
-            restaurante_tag = Restaurante_Tag.objects.filter(tag=tags.pk)
-            restaurantes = Restaurante.objects.filter(pk=restaurante_tag.pk)
-
+            try:
+                tags = Tags.objects.get(nome=kwargs['nome'])
+            except Tags.DoesNotExist:
+                return Response("Tag não existente")
+            
         else:
             classificacao = None
 
         if self.queryset == None:
             return Response("Sem dados")
         else:
-            dic = {}
-            for x in restaurantes.nome:
-                dic["restaurantes"]: restaurantes.nome
+            # print(restaurante_tag.restaurante_id)
+            dic = {}; n = 0;
+
+            for pk in Restaurante_Tag.objects.filter(tag=tags.pk).values():
+                dic[n] = pk['restaurante_id']
+                n += 1
+            lista = [None]*len(pk); n = 0
+
+            for i in dic.values():
+                lista[n] = Restaurante.objects.get(pk=i).nome
+                n += 1                   
+
+
             return Response({
-                "restaurantes": dic
-                })
+                "restaurantes": lista
+            })
+
+    # def dados(self, *args, **kwargs):
+    #     yield kwargs[]
