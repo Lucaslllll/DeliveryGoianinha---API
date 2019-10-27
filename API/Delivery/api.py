@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .serializers import (
     UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
     ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
-    ClassificacaoUsuarioSerializer, ComidaSerializer, IngredientesSerializer, 
+    ClassificacaoUsuarioSerializer, ClassificacaoUsuarioFNSerializer, ComidaSerializer, IngredientesSerializer, 
     CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
     ComentarioSerializer, TagRestauranteSerializer, TagSerializer, TagRestauranteFiltrarSerializer, 
 )
@@ -18,10 +18,12 @@ class RestauranteViewSet(viewsets.ModelViewSet):
     serializer_class = RestauranteSerializer
     lookup_field = 'slug'
 
+
+# Classificacao restaurante
+
 class ClassificacaoRestauranteViewSet(viewsets.ModelViewSet):
     queryset = Classificacao_Restaurante.objects.all()
     serializer_class = ClassificacaoRestauranteSerializer
-
 
 class ClassificacaoRestauranteFinal(generics.RetrieveAPIView):
     queryset = Classificacao_Restaurante.objects.all()
@@ -42,7 +44,7 @@ class ClassificacaoRestauranteFinal(generics.RetrieveAPIView):
         else:
             classificacao = None
 
-        if self.queryset == None:
+        if classificacao == None:
             return Response("Sem dados")
         else:
             media = 0
@@ -61,9 +63,53 @@ class ClassificacaoRestauranteFinal(generics.RetrieveAPIView):
                 "nota": media
             })
 
+
+# Classificacao usuario
+
 class ClassificacaoUsuarioViewSet(viewsets.ModelViewSet):
     queryset = Classificacao_Usuario.objects.all()
     serializer_class = ClassificacaoUsuarioSerializer 
+
+class ClassificacaoUsuarioFinal(generics.RetrieveAPIView):
+    queryset = Classificacao_Usuario.objects.all()
+    serializer_class = ClassificacaoUsuarioFNSerializer
+
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+
+            try:
+                usuario = User.objects.get(pk=kwargs['pk'])
+            except User.DoesNotExist:
+                return Response("Não existe usuario")
+
+            classificacao = Classificacao_Usuario.objects.filter(usuario=usuario.pk)
+        else:
+            classificacao = None
+
+        if classificacao == None:
+            return Response("Sem dados")
+        else:
+            media = 0
+            
+            cr = list(classificacao)
+            
+            n = 0
+            for x in range(0, len(cr)):
+                n += 1
+                nota = cr[x].nota
+                media += nota
+            media /= n
+
+            return Response({
+                "usuário": usuario.username,
+                "nota": media
+            })
+
+
+# comida
 
 class ComidaViewSet(viewsets.ModelViewSet):
     queryset = Comida.objects.all()
@@ -88,6 +134,9 @@ class PedidoRestauranteViewSet(viewsets.ModelViewSet):
 class ComentarioViewSet(viewsets.ModelViewSet):
     queryset = Comentario.objects.all()
     serializer_class = ComentarioSerializer
+
+
+# tag
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tags.objects.all()

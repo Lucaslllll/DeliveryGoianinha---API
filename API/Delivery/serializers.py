@@ -46,10 +46,18 @@ class ComentarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+# classificacao
+
 class ClassificacaoUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classificacao_Usuario
         fields = '__all__'
+
+class ClassificacaoUsuarioFNSerializer(serializers.Serializer):
+    class Meta:
+        model = Usuario
+        fields = ('id', )
 
 class ClassificacaoRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,6 +69,8 @@ class ClassificacaoRestauranteFNSerializer(serializers.Serializer):
         model = Restaurante
         fields = ('id', )
         
+
+# comida
 
 class FotosRestauranteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -96,6 +106,9 @@ class CardapioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cardapio
         fields = '__all__'
+
+
+# tags
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:

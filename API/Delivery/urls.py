@@ -25,6 +25,7 @@ urlpatterns = router.urls
 urlpatterns += [
 	# retrieve
 	path('api/classificacao_restaurante_final/<str:restaurante_slug>', api.ClassificacaoRestauranteFinal.as_view(), name='classificacao_restaurante_final'),
+	path('api/classificacao_usuario_final/<int:pk>', api.ClassificacaoUsuarioFinal.as_view(), name='classificacao_usuario_final'),
 	path('api/filtrar_restaurante/<str:nome>', api.FiltrarTagRestaurante.as_view(), name='tag_filtro'),
 	
 	path('api/foto_restaurante', views.FotosRestauranteCloud.as_view(), name='foto_restaurante'),	
