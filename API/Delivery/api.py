@@ -172,7 +172,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
             for pk in Restaurante_Tag.objects.filter(tag=tags.pk).values():
                 dic[n] = pk['restaurante_id']
                 n += 1
-            lista = [None]*len(pk); n = 0
+            lista = [None]*len(dic); n = 0
 
             for i in dic.values():
                 lista[n] = Restaurante.objects.get(pk=i).nome
