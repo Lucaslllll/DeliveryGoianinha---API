@@ -174,14 +174,28 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                 n += 1
             lista = [None]*len(dic); n = 0
 
+            # dic dentro da lista
             for i in dic.values():
-                lista[n] = Restaurante.objects.get(pk=i).nome
+                lista[n] = { 
+                    'id': Restaurante.objects.get(pk=i).id,
+                    'nome': Restaurante.objects.get(pk=i).nome,
+                    'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
+                    'slug': Restaurante.objects.get(pk=i).slug,
+                }
                 n += 1                   
 
 
             return Response({
                 "restaurantes": lista
             })
+
+"""
+id
+nome
+descricao breve
+slug
+
+"""
 
     # def dados(self, *args, **kwargs):
     #     yield kwargs[]
