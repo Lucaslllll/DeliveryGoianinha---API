@@ -189,13 +189,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                 "restaurantes": lista
             })
 
-"""
-id
-nome
-descricao breve
-slug
 
-"""
 
     # def dados(self, *args, **kwargs):
     #     yield kwargs[]

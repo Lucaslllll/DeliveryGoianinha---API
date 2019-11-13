@@ -115,7 +115,7 @@ class Pedido(models.Model):
 
 
 class Pedido_Restaurante(models.Model):
-    cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
 
@@ -124,7 +124,7 @@ class Pedido_Restaurante(models.Model):
     
 
 class Comentario(models.Model):
-    autor = models.ForeignKey(Usuario, on_delete=models.CASCADE, blank=True, null=True)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
     titulo = models.CharField(max_length=100)
     descricao = models.CharField(max_length=1000)
