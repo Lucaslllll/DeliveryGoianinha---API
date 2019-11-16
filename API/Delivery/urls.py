@@ -28,6 +28,9 @@ urlpatterns += [
 	path('api/classificacao_usuario_final/<int:pk>', api.ClassificacaoUsuarioFinal.as_view(), name='classificacao_usuario_final'),
 	path('api/filtrar_restaurante/<str:nome>', api.FiltrarTagRestaurante.as_view(), name='tag_filtro'),
 	
-	path('api/foto_restaurante', views.FotosRestauranteCloud.as_view(), name='foto_restaurante'),	
-	path('api/foto_comida', views.FotosComidaCloud.as_view(), name='foto_comida')
+	path('api/foto_restaurante', views.FotosRestauranteCloud.as_view(), name='foto_restaurante'),
+	path('api/foto_restaurante/<int:pk>', views.FotosRestauranteCloudUD.as_view(), name='foto_restauranteUD'),
+	
+	path('api/foto_comida', views.FotosComidaCloud.as_view(), name='foto_comida'),
+	path('api/foto_comida/<int:pk>', views.FotosComidaCloudUD.as_view(), name='foto_restauranteUD'),
 ]
