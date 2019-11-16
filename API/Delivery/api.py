@@ -181,6 +181,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                     'nome': Restaurante.objects.get(pk=i).nome,
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
+                    'status': Restaurante.objects.get(pk=i).status,
                 }
                 n += 1                   
 
@@ -193,3 +194,58 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
 
     # def dados(self, *args, **kwargs):
     #     yield kwargs[]
+
+class PegarPedidosRestaurante(generics.RetrieveAPIView):
+    queryset = Pedido_Restaurante.objects.all()
+    serializer_class= PedidoRestauranteSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            try:
+                restaurante = Restaurante.objects.get(slug=kwargs['restaurante_slug'])
+            except Restaurante.DoesNotExist:
+                return Response("Restaurante não existente")
+            
+        else:
+            restaurante = None
+
+        if restaurante == None:
+            return Response("Sem dados")
+        else:
+            # print(restaurante_tag.restaurante_id)
+            dic = {}; n = 0;
+
+            for pk in Pedido_Restaurante.objects.filter(restaurante=restaurante.pk).values():
+                dic[n] = pk['pedido_id']
+                n += 1
+            lista = [None]*len(dic); n = 0
+
+            # dic dentro da lista
+
+            for i in dic.values():
+                a = []; index = 0;
+                pedido = Pedido.objects.get(pk=i)
+
+                for val in pedido.comida.values():
+                    a.append(val)
+                    index += 1
+
+                print(a)
+
+                # sempre colocar listas
+                lista[n] = { 
+                    'id': Pedido.objects.get(pk=i).id,
+                    'detalhes': Pedido.objects.get(pk=i).detalhes,
+                    'unidades': Pedido.objects.get(pk=i).unidades,
+                    'tempo': Pedido.objects.get(pk=i).tempo,
+                    'comida': a,
+                    'cliente': {},
+                }
+                n += 1      
+
+            return Response({
+                "restaurante": restaurante.nome,
+                "pedidos": lista
+            })

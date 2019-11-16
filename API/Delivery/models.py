@@ -106,18 +106,18 @@ class Fotos_Comida(models.Model):
 
 
 class Pedido(models.Model):
-    nome = models.ForeignKey(Comida, on_delete=models.CASCADE)
+    detalhes = models.CharField(max_length=500)
+    comida = models.ManyToManyField(Comida)
     unidades = models.IntegerField()
-    entrega = models.DateTimeField()
+    tempo = models.DateTimeField()
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nome
-
-
+        return self.detalhes
+        
 class Pedido_Restaurante(models.Model):
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, blank=True, null=True)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
 
 
 
