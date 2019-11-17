@@ -40,7 +40,7 @@ class Codimentos(models.Model):
 # acai, pizza, hamburger.
 class Tipo(models.Model):
     nome = models.CharField(max_length=120)
-    foto = models.ImageField(upload_to='Fotos/Tipo_Comida')
+    foto = CloudinaryField('foto', null=True)
     ingredientes = models.ManyToManyField(Ingredientes) 
     
     def __str__(self):
@@ -51,10 +51,10 @@ class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     x = models.CharField(max_length=100, null=True, blank=True)
     y = models.CharField(max_length=100, null=True, blank=True)
-    foto = models.ImageField(upload_to='Fotos/Usuario', null=True, blank=True)
+    foto = CloudinaryField('foto', null=True)
     
     def __str__(self):
-        return self.nome.username
+        return self.user.username
 
 
 class Tags(models.Model):
@@ -76,7 +76,8 @@ class Restaurante(models.Model):
     y = models.CharField(max_length=100, null=True, blank=True)
     status = models.BooleanField(default=True, null=True)
     telefone = PhoneNumberField(region='BR')
-    foto = models.ImageField(upload_to='Fotos/Restaurante')
+    foto = CloudinaryField('foto', null=True)
+    dias = models.CharField(max_length=500, null=True)
     # tags = models.ManyToManyField(Tags, through='Restaurante_Tag')
 
     def __str__(self):

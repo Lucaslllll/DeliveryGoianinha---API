@@ -12,6 +12,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = '__all__'
+    
+    def to_representation(self, instance):
+        representation = super(UsuarioSerializer, self).to_representation(instance)
+        representation['foto'] = instance.foto.url
+        return representation        
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +31,11 @@ class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
         }
+
+    def to_representation(self, instance):
+        representation = super(RestauranteSerializer, self).to_representation(instance)
+        representation['foto'] = instance.foto.url
+        return representation
 
         
 
@@ -100,6 +110,11 @@ class ComidaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tipo
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super(ComidaSerializer, self).to_representation(instance)
+        representation['foto'] = instance.foto.url
+        return representation
 
 class TamanhoSerializer(serializers.ModelSerializer):
     class Meta:
