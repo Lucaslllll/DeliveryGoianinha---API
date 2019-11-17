@@ -260,3 +260,54 @@ class PegarPedidosRestaurante(generics.RetrieveAPIView):
                 "restaurante": restaurante.nome,
                 "pedidos": lista
             })
+
+
+class PegarComentariosRestaurante(generics.RetrieveAPIView):
+    queryset = Pedido_Restaurante.objects.all()
+    serializer_class= PedidoRestauranteSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            try:
+                restaurante = Restaurante.objects.get(slug=kwargs['restaurante_slug'])
+            except Restaurante.DoesNotExist:
+                return Response("Restaurante não existente")
+            
+        else:
+            restaurante = None
+
+        if restaurante == None:
+            return Response("Sem dados")
+        else:
+            # print(restaurante_tag.restaurante_id)
+            dic = {}; n = 0;
+
+            for pk in Comentario.objects.filter(restaurante=restaurante.pk).values():
+                dic[n] = pk['id']
+                n += 1
+            lista = [None]*len(dic); n = 0;
+
+            # dic dentro da lista
+
+            for i in dic.values():
+                comentario = Comentario.objects.get(pk=i)
+
+
+                # sempre colocar listas
+                lista[n] = { 
+                    'id': comentario.id,
+                    'restaurante': comentario.restaurante.nome,
+                    'autor': comentario.autor.username,
+                    'titulo': comentario.titulo,
+                    'detalhes': comentario.descricao,
+                    
+                }
+                n += 1      
+                   
+
+            return Response({
+                "restaurante": restaurante.nome,
+                "comentarios": lista
+            })
