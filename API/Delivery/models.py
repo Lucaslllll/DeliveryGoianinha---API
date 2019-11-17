@@ -4,6 +4,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 import os
 from cloudinary.models import CloudinaryField
 
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
 
 def get_path_restaurante(self, instance, filename):
@@ -49,6 +51,7 @@ class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     x = models.CharField(max_length=100, null=True, blank=True)
     y = models.CharField(max_length=100, null=True, blank=True)
+    foto = models.ImageField(upload_to='Fotos/Usuario', null=True, blank=True)
     
     def __str__(self):
         return self.nome.username

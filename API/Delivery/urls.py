@@ -5,7 +5,7 @@ from . import api, views
 
 router = routers.DefaultRouter()
 # router.register('api/user', api.UserViewSet, 'user')
-# router.register('api/usuario', api.UsuarioViewSet, 'usuario')
+router.register('api/usuario', api.UsuarioViewSet, 'usuario')
 router.register('api/classificacao_usuario', api.ClassificacaoUsuarioViewSet, 'classficacao_usuario')
 router.register('api/restaurante', api.RestauranteViewSet, 'restaurante')
 router.register('api/classificacao_restaurante', api.ClassificacaoRestauranteViewSet, 'classificacao_restaurante')

@@ -13,6 +13,11 @@ from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_
                     Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags)
 
 
+class UsuarioViewSet(viewsets.ModelViewSet):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    
+
 class RestauranteViewSet(viewsets.ModelViewSet):
     queryset = Restaurante.objects.all()
     serializer_class = RestauranteSerializer
@@ -228,7 +233,6 @@ class PegarPedidosRestaurante(generics.RetrieveAPIView):
 
             # dic dentro da lista
 
-            print(dic.values())
             for i in dic.values():
                 codimentos = []; index = 0;
                 pedido = Pedido.objects.get(pk=i)
