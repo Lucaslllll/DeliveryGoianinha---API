@@ -32,7 +32,7 @@ class Tamanho(models.Model):
 # extras
 class Codimentos(models.Model):
     nome = models.CharField(max_length=120)
-    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    preco = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     def __str__(self):
         return self.nome
@@ -121,6 +121,16 @@ class Fotos_Comida(models.Model):
 
     def __str__(self):
         return self.comida.nome
+
+class Cardapio(models.Model):
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
+    nome = models.CharField(max_length=100)
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    quantidade = models.CharField(max_length=100)
+    foto = CloudinaryField('foto', null=True)
+
+    def __str__(self):
+        return self.nome
 
 
 class Pedido(models.Model):

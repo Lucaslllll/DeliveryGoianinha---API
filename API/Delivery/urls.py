@@ -15,6 +15,7 @@ router.register('api/codimentos', api.CodimentosViewSet, 'codimentos')
 router.register('api/tamanho', api.TamanhoViewSet, 'tamanho')
 router.register('api/pedido', api.PedidoViewSet, 'pedido')
 router.register('api/pedido_restaurante', api.PedidoRestauranteViewSet, 'pedido_restaurante')
+router.register('api/cardapio', api.CardapioViewSet, 'cardapio')
 router.register('api/comentario', api.ComentarioViewSet, 'comentario')
 router.register('api/tags', api.TagViewSet, 'tags')
 router.register('api/tag_restaurante', api.TagRestauranteViewSet, 'tag_restaurante')
@@ -37,4 +38,5 @@ urlpatterns += [
 
 	path('api/pegar_pedidos/<str:restaurante_slug>', api.PegarPedidosRestaurante.as_view(), name='pegar_pedidos'),
 	path('api/pegar_comentarios/<str:restaurante_slug>', api.PegarComentariosRestaurante.as_view(), name='pegar_comentarios'),
+	path('api/pegar_cardapio/<str:restaurante_slug>', api.PegarCardapioRestaurante.as_view(), name='pegar_cardapio'),
 ]

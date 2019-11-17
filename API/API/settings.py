@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'Delivery',
     'accounts',
+    'chat',
     'knox',
     'cloudinary',
 
