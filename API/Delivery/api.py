@@ -5,11 +5,11 @@ from .serializers import (
     UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
     ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
     ClassificacaoUsuarioSerializer, ClassificacaoUsuarioFNSerializer, ComidaSerializer, IngredientesSerializer, 
-    CardapioSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
+    CodimentosSerializer, TamanhoSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
     ComentarioSerializer, TagRestauranteSerializer, TagSerializer, TagRestauranteFiltrarSerializer, 
 )
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
-                    Fotos_Comida, Fotos_Restaurante, Ingredientes, Comida, Cardapio,
+                    Fotos_Comida, Fotos_Restaurante, Ingredientes, Tipo, Tamanho, Codimentos,
                     Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags)
 
 
@@ -112,16 +112,20 @@ class ClassificacaoUsuarioFinal(generics.RetrieveAPIView):
 # comida
 
 class ComidaViewSet(viewsets.ModelViewSet):
-    queryset = Comida.objects.all()
+    queryset = Tipo.objects.all()
     serializer_class = ComidaSerializer
 
 class IngredientesViewSet(viewsets.ModelViewSet):
     queryset = Ingredientes.objects.all()
     serializer_class = IngredientesSerializer
 
-class CardapioViewSet(viewsets.ModelViewSet):
-    queryset = Cardapio.objects.all()
-    serializer_class = CardapioSerializer
+class CodimentosViewSet(viewsets.ModelViewSet):
+    queryset = Codimentos.objects.all()
+    serializer_class = CodimentosSerializer
+
+class TamanhoViewSet(viewsets.ModelViewSet):
+    queryset = Tamanho.objects.all()
+    serializer_class = TamanhoSerializer
 
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
@@ -224,26 +228,29 @@ class PegarPedidosRestaurante(generics.RetrieveAPIView):
 
             # dic dentro da lista
 
+            print(dic.values())
             for i in dic.values():
-                a = []; index = 0;
+                codimentos = []; index = 0;
                 pedido = Pedido.objects.get(pk=i)
 
-                for val in pedido.comida.values():
-                    a.append(val)
+                for val in pedido.codimentos.values():
+                    codimentos.append(val)
                     index += 1
 
-                print(a)
 
                 # sempre colocar listas
                 lista[n] = { 
                     'id': Pedido.objects.get(pk=i).id,
                     'detalhes': Pedido.objects.get(pk=i).detalhes,
+                    'nome': pedido.nome.nome,
+                    'tamanho': pedido.tamanho.nome,
                     'unidades': Pedido.objects.get(pk=i).unidades,
                     'tempo': Pedido.objects.get(pk=i).tempo,
-                    'comida': a,
-                    'cliente': {},
+                    'codimentos': codimentos,
+                    'cliente': pedido.cliente.pk,
                 }
                 n += 1      
+                   
 
             return Response({
                 "restaurante": restaurante.nome,

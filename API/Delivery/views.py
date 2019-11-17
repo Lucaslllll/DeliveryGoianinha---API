@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import FotosRestauranteSerializer, FotosComidaSerializer
-from .models import Fotos_Restaurante, Fotos_Comida, Comida
+from .models import Fotos_Restaurante, Fotos_Comida, Tipo
 from cloudinary.templatetags import cloudinary
 import cloudinary.uploader
 from rest_framework import viewsets, permissions, generics

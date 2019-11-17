@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
-    Fotos_Comida, Fotos_Restaurante, Ingredientes, Comida, Cardapio,
+    Fotos_Comida, Fotos_Restaurante, Ingredientes, Tipo, Tamanho, Codimentos,
     Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags
 )
 from django.contrib.auth.models import User
@@ -21,8 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Restaurante
-        fields = ('id', 'nome', 'cnpj', 'slug' ,'localizacao', 'descricao_breve', 
-                  'descricao_longa', 'status', 'telefone', )
+        fields = '__all__'
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
@@ -99,12 +98,17 @@ class IngredientesSerializer(serializers.ModelSerializer):
 
 class ComidaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comida
+        model = Tipo
         fields = '__all__'
 
-class CardapioSerializer(serializers.ModelSerializer):
+class TamanhoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cardapio
+        model = Tamanho
+        fields = '__all__'
+
+class CodimentosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Codimentos
         fields = '__all__'
 
 
