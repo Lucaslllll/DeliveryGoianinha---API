@@ -10,8 +10,8 @@ class Remetente(models.Model):
     
 
 class Mensagem(models.Model):
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')        
-    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, related_name='receiver')        
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cliente')        
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, related_name='restaurante')        
     mensagem = models.CharField(max_length=1200)
     hora_envio = models.DateTimeField(auto_now_add=True)
     remetente = models.ForeignKey(Remetente, on_delete=models.CASCADE, null=True, blank=True)

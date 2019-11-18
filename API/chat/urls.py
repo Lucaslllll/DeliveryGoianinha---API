@@ -1,11 +1,18 @@
 from django.conf.urls import url
 from django.urls import include
-from . import views
+from . import views, api
 from django.urls import path
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+
+router.register('api/mensagem', api.MensagemViewSet, 'mensagem_lista')
 
 
-urlpatterns = [
-	path('api/mensagem/<int:cliente>/<int:restaurante>', views.mensagem_lista, name='mensagem_lista'), 
-	path('api/mensagem/', views.mensagem_lista, name='mensagem_lista'),   
-    
+urlpatterns = router.urls
+
+
+urlpatterns += [
+	path('api/filtrar_mensagem/<int:cliente>/<int:restaurante>', api.PegarMensagem.as_view(), name='filtrar_mensagem'), 
+	
 ]
