@@ -91,3 +91,9 @@ class VerifySerializer(serializers.Serializer):
 
 class LogoutSerializer(serializers.Serializer):
     pk = serializers.CharField()
+
+class ResetSerializer(serializers.Serializer):
+    atual_password = serializers.CharField()
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
+    

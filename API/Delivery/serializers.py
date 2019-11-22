@@ -6,6 +6,8 @@ from .models import (
 )
 from django.contrib.auth.models import User
 from cloudinary.templatetags import cloudinary
+import cloudinary.uploader
+from cloudinary.forms import CloudinaryFileField
 
 
 class UsuarioSerializer(serializers.ModelSerializer):

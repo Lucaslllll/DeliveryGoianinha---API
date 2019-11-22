@@ -40,7 +40,12 @@ class Codimentos(models.Model):
 # acai, pizza, hamburger.
 class Tipo(models.Model):
     nome = models.CharField(max_length=120)
-    foto = CloudinaryField('foto', null=True)
+    foto = foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
     ingredientes = models.ManyToManyField(Ingredientes) 
     
     def __str__(self):
@@ -51,7 +56,12 @@ class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     x = models.CharField(max_length=100, null=True, blank=True)
     y = models.CharField(max_length=100, null=True, blank=True)
-    foto = CloudinaryField('foto', null=True)
+    foto = foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
     
     def __str__(self):
         return self.user.username
@@ -76,7 +86,12 @@ class Restaurante(models.Model):
     y = models.CharField(max_length=100, null=True, blank=True)
     status = models.BooleanField(default=True, null=True)
     telefone = PhoneNumberField(region='BR')
-    foto = CloudinaryField('foto', null=True)
+    foto = foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
     dias = models.CharField(max_length=500, null=True)
     # tags = models.ManyToManyField(Tags, through='Restaurante_Tag')
 
@@ -110,14 +125,24 @@ class Classificacao_Restaurante(models.Model):
 
 class Fotos_Restaurante(models.Model):
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
-    foto = CloudinaryField('foto', null=True)
+    foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
     
     def __str__(self):
         return self.restaurante.nome
 
 class Fotos_Comida(models.Model):
     comida = models.ForeignKey(Tipo, on_delete=models.CASCADE, blank=True, null=True)
-    foto = CloudinaryField('foto', null=True)
+    foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
 
     def __str__(self):
         return self.comida.nome
@@ -127,7 +152,12 @@ class Cardapio(models.Model):
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
     quantidade = models.CharField(max_length=100)
-    foto = CloudinaryField('foto', null=True)
+    foto = CloudinaryField('foto', null=True, 
+        overwrite=True,
+        resource_type="image",
+        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        format="png",
+    )
 
     def __str__(self):
         return self.nome
