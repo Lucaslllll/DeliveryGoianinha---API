@@ -25,14 +25,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
-class RestauranteSerializer(serializers.HyperlinkedModelSerializer):
+class RestauranteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurante
         fields = '__all__'
-        lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
+        # lookup_field = 'slug'
+        # extra_kwargs = {
+        #     'url': {'lookup_field': 'slug'}
+        # }
 
     def to_representation(self, instance):
         representation = super(RestauranteSerializer, self).to_representation(instance)

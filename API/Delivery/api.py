@@ -196,6 +196,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
                     'status': Restaurante.objects.get(pk=i).status,
+                    'foto': Restaurante.objects.get(pk=i).foto.url,
                 }
                 n += 1                   
 
