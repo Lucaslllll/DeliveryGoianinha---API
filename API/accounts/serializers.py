@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_auth.serializers import UserDetailsSerializer
 
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
+
 
 
 
@@ -93,7 +96,30 @@ class LogoutSerializer(serializers.Serializer):
     pk = serializers.CharField()
 
 class ResetSerializer(serializers.Serializer):
+    pk = serializers.CharField()    
     atual_password = serializers.CharField()
     password1 = serializers.CharField()
     password2 = serializers.CharField()
     
+    def validate(self, data):
+        pk = data['pk']
+        atual_password = data['atual_password']
+        password1 = data['password1']
+        password2 = data['password2']
+        
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            user = None
+
+        if user == None:
+            raise serializers.ValidationError("Usuário não existe")
+        else:
+            confirmacao = check_password(atual_password, user.password)
+            if confirmacao == True:    
+                if password1 == password2:
+                    return password1
+                else:
+                    raise serializers.ValidationError("Senhas diferentes")
+            else:
+                raise serializers.ValidationError("Senha atual incorreta")

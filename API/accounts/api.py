@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
 
+
 # API do registro
 class RegistrarAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -116,18 +117,20 @@ class Logout(generics.GenericAPIView):
         
 
 class ResetPasswordAPI(generics.GenericAPIView):
-    serializer_class = RegisterSerializer
+    serializer_class = ResetSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
-        token = Token.objects.create(user=user)
+        password = serializer.validated_data
+        
+        user = User.objects.get(pk=request.data['pk'])
+        user.set_password(password)
+        user.save()
+        
         return Response({
 
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": token.key
 
         }) 
 

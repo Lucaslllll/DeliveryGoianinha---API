@@ -11,5 +11,5 @@ urlpatterns = [
 	path('logout', api.Logout.as_view(), name='logout'),
 	path('api-token-auth', views.CustomAuthToken.as_view(), name='token'),
 	path('verify-token', api.VerifyToken.as_view(), name='verify-token'),
-	path('reset-password', api.ResetPasswordAPI, name='reset-password')
+	path('reset-password', api.ResetPasswordAPI.as_view(), name='reset-password')
 ]

@@ -89,7 +89,7 @@ class Restaurante(models.Model):
     foto = foto = CloudinaryField('foto', null=True, 
         overwrite=True,
         resource_type="image",
-        transformation={"quality": "auto:good", "width": 259, "height": 168},
+        transformation={"quality": "auto:best", "width": 259, "height": 168},
         format="png",
     )
     dias = models.CharField(max_length=500, null=True)
