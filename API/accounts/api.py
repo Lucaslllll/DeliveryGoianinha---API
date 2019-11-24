@@ -6,6 +6,12 @@ from .serializers import (UserSerializer, RegisterSerializer, LoginSerializer,
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+from django.core import mail
+
+from rest_framework import viewsets, permissions, generics
+from django.template.loader import render_to_string
 
 
 # API do registro
@@ -132,7 +138,40 @@ class ResetPasswordAPI(generics.GenericAPIView):
 
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
 
-        }) 
+        })
+
+
+
+
+def email_client(request, user):
+    msg_html = render_to_string('email.html', {'user': user})
+    connection = mail.get_connection()
+
+    # Manually open the connection
+    connection.open()
+
+    # Construct an email message that uses the connection
+    email1 = mail.EmailMessage(
+        'Hello',
+        msg_html,
+        'entrego.oficialdelivery@gmail.com',
+        [user.email, ],
+        connection=connection,
+    )
+    email1.send() # Send the email
+
+
+class EmailList(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        email_client(request, user)
+        return Response("Deu certo")
+        
 
 
 # def get_post_response_data(self, request, token, instance):
