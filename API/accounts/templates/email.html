@@ -1,5 +1,6 @@
 {% autoescape off %}
-Hi {{ user.username }},
-Please click on the link to confirm your registration,
-http://suap.ifrn.edu.br
+Olá {{ user.username }},
+Por favor clique no link para confirmar sua redefinição de senha,
+http://localhost:8000/recovery-confirme/{{user.id}}/{{token}}
+
 {% endautoescape %}

@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import (UserSerializer, RegisterSerializer, LoginSerializer, 
+from .serializers import (UserSerializer, UserFNSerializer, RegisterSerializer, LoginSerializer, 
                           VerifySerializer, LogoutSerializer, ResetSerializer)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -12,6 +12,9 @@ from django.core import mail
 
 from rest_framework import viewsets, permissions, generics
 from django.template.loader import render_to_string
+from .utils import email_client
+from .tokens import account_activation_token
+
 
 
 # API do registro
@@ -143,24 +146,6 @@ class ResetPasswordAPI(generics.GenericAPIView):
 
 
 
-def email_client(request, user):
-    msg_html = render_to_string('email.html', {'user': user})
-    connection = mail.get_connection()
-
-    # Manually open the connection
-    connection.open()
-
-    # Construct an email message that uses the connection
-    email1 = mail.EmailMessage(
-        'Hello',
-        msg_html,
-        'entrego.oficialdelivery@gmail.com',
-        [user.email, ],
-        connection=connection,
-    )
-    email1.send() # Send the email
-
-
 class EmailList(generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -170,9 +155,28 @@ class EmailList(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         email_client(request, user)
-        return Response("Deu certo")
+        return Response("Email enviado")
         
 
+class EmailConfirme(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFNSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+
+            try:
+                user = User.objects.get(pk=kwargs['pk'])
+            except User.DoesNotExist:
+                return Response("Não existe usuário")
+            
+
+            if user is not None and account_activation_token.check_token(user, kwargs['token']):
+                return Response(True,)
+            else:
+                return Response(False,)
 
 # def get_post_response_data(self, request, token, instance):
 #         UserSerializer = self.get_user_serializer_class()

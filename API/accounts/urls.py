@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.urls import include
-from . import api, views
+from . import api, views, utils
 from django.urls import path
 
 # from rest_framework import routers
@@ -20,4 +20,5 @@ urlpatterns = [
 	path('verify-token', api.VerifyToken.as_view(), name='verify-token'),
 	path('reset-password', api.ResetPasswordAPI.as_view(), name='reset-password'),
 	path('recovery-password', api.EmailList.as_view(), name='recovery-password'),
+	path('recovery-confirme/<int:pk>/<str:token>', api.EmailConfirme.as_view(), name='recovery-confirme'),
 ]

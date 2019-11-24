@@ -23,6 +23,10 @@ class UserSerializer(serializers.Serializer):
 
         return user
 
+class UserFNSerializer(serializers.Serializer):
+    class Meta:
+        model = User
+        fields = ('id', )
 
 # serializer para registro
 class RegisterSerializer(serializers.ModelSerializer):
