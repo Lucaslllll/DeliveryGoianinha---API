@@ -39,4 +39,5 @@ urlpatterns += [
 	path('api/pegar_pedidos/<str:restaurante_slug>', api.PegarPedidosRestaurante.as_view(), name='pegar_pedidos'),
 	path('api/pegar_comentarios/<str:restaurante_slug>', api.PegarComentariosRestaurante.as_view(), name='pegar_comentarios'),
 	path('api/pegar_cardapio/<str:restaurante_slug>', api.PegarCardapioRestaurante.as_view(), name='pegar_cardapio'),
+	path('api/pegar_foto_user/<int:pk>', api.PegarFotoUser.as_view(), name='pegar_foto'),
 ]

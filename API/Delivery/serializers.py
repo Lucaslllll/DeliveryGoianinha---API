@@ -20,10 +20,17 @@ class UsuarioSerializer(serializers.ModelSerializer):
         representation['foto'] = instance.foto.url
         return representation        
 
+class UsuarioFNSerializer(serializers.Serializer):
+    class Meta:
+        model = Usuario
+        fields = ('id', )
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
+
+
 
 class RestauranteSerializer(serializers.ModelSerializer):
     class Meta:

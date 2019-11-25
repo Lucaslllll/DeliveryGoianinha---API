@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from .serializers import (
-    UserSerializer, UsuarioSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
+    UserSerializer, UsuarioSerializer, UsuarioFNSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
     ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
     ClassificacaoUsuarioSerializer, ClassificacaoUsuarioFNSerializer, ComidaSerializer, IngredientesSerializer, 
     CodimentosSerializer, TamanhoSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
@@ -365,4 +365,33 @@ class PegarCardapioRestaurante(generics.RetrieveAPIView):
             return Response({
                 "restaurante": restaurante.nome,
                 "cardapio": lista
+            })
+
+class PegarFotoUser(generics.RetrieveAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioFNSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            try:
+                user = User.objects.get(pk=kwargs['pk'])
+            except User.DoesNotExist:
+                return Response("User não existente")
+            
+        else:
+            user = None
+
+        if user == None:
+            return Response("Sem dados")
+        else:
+            try:
+                usuario = Usuario.objects.get(user=user.pk)
+            except Usuario.DoesNotExist:
+                return Response("Usuário não tem foto ou não existe")
+
+            return Response({
+                "id": user.id,
+                "foto": usuario.foto.url,
             })
