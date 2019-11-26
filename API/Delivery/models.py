@@ -179,6 +179,9 @@ class Pedido_Restaurante(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, blank=True, null=True)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
 
+class Codimentos_Restaurante(models.Model):
+    codimentos = models.ForeignKey(Codimentos, on_delete=models.CASCADE, blank=True, null=True)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
 
 class Comentario(models.Model):
     autor = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
