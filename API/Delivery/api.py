@@ -395,3 +395,67 @@ class PegarFotoUser(generics.RetrieveAPIView):
                 "id": user.id,
                 "foto": usuario.foto.url,
             })
+
+class Buscar(generics.RetrieveAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioFNSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            
+            restaurante = Restaurante.objects.filter(nome__icontains=kwargs['nome'])
+            cardapio = Cardapio.objects.filter(nome__icontains=kwargs['nome'])
+            confirme = True
+
+        else:
+            confirme = None
+
+        if confirme == None:
+            return Response("Sem dados")
+        else:
+            dic1 = {}; n = 0;
+            for pk in cardapio.values():
+                dic1[n] = pk['id']
+                n += 1
+            lista1 = [None]*len(dic1); n = 0;
+
+            for i in dic1.values():
+                cardapio = Cardapio.objects.get(pk=i)
+
+
+                lista1[n] = { 
+                    'id': cardapio.id,
+                    'restaurante': cardapio.restaurante.nome,
+                    'nome': cardapio.nome,
+                    'preco': cardapio.preco,
+                    'quantidade': cardapio.quantidade,
+                    'foto': cardapio.foto.url
+                }
+                n += 1
+
+
+
+            dic2 = {}; n = 0;
+            for pk in restaurante.values():
+                dic2[n] = pk['id']
+                n += 1
+            lista2 = [None]*len(dic2); n = 0;
+
+            for i in dic2.values():
+
+                lista2[n] = { 
+                    'id': Restaurante.objects.get(pk=i).id,
+                    'nome': Restaurante.objects.get(pk=i).nome,
+                    'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
+                    'slug': Restaurante.objects.get(pk=i).slug,
+                    'status': Restaurante.objects.get(pk=i).status,
+                    'foto': Restaurante.objects.get(pk=i).foto.url,
+                }
+                n += 1
+
+            return Response({
+                "restaurante": lista1,
+                "cardapio": lista2
+            })
