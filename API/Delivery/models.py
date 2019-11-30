@@ -158,9 +158,12 @@ class Cardapio(models.Model):
         transformation={"quality": "auto:good", "width": 259, "height": 168},
         format="png",
     )
+    destaque = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return self.nome
+
+
 
 
 class Pedido(models.Model):
