@@ -127,3 +127,29 @@ class ResetSerializer(serializers.Serializer):
                     raise serializers.ValidationError("Senhas diferentes")
             else:
                 raise serializers.ValidationError("Senha atual incorreta")
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    pk = serializers.CharField()
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
+
+    def validate(self, data):
+        pk = data['pk']
+        password1 = data['password1']
+        password2 = data['password2']
+
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            user = None
+
+        if user == None:
+            raise serializers.ValidationError("Usuário não existe")
+        else:
+            if password1 == password2:
+                return password1
+            else:
+                raise serializers.ValidationError("Senhas diferentes")
+        
+

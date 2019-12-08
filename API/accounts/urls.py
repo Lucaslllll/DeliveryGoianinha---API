@@ -21,4 +21,5 @@ urlpatterns = [
 	path('reset-password', api.ResetPasswordAPI.as_view(), name='reset-password'),
 	path('recovery-password', api.EmailList.as_view(), name='recovery-password'),
 	path('recovery-confirme/<int:pk>/<str:token>', api.EmailConfirme.as_view(), name='recovery-confirme'),
+	path('change-password', api.ChangePassword.as_view(), name='change-password'),
 ]

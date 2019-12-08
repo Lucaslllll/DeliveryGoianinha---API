@@ -2,7 +2,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import (UserSerializer, UserFNSerializer, RegisterSerializer, LoginSerializer, 
-                          VerifySerializer, LogoutSerializer, ResetSerializer)
+                          VerifySerializer, LogoutSerializer, ResetSerializer, ChangePasswordSerializer)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
@@ -178,16 +178,21 @@ class EmailConfirme(generics.RetrieveAPIView):
             else:
                 return Response(False,)
 
-# def get_post_response_data(self, request, token, instance):
-#         UserSerializer = self.get_user_serializer_class()
+class ChangePassword(generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
 
-#         data = {
-#             'expiry': self.format_expiry_datetime(instance.expiry),
-#             'token': token
-#         }
-#         if UserSerializer is not None:
-#             data["user"] = UserSerializer(
-#                 request.user,
-#                 context=self.get_context()
-#             ).data
-#         return data
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        password = serializer.validated_data
+        
+        user = User.objects.get(pk=request.data['pk'])
+        user.set_password(password)
+        user.save()
+        
+        return Response({
+
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+
+        })
+
