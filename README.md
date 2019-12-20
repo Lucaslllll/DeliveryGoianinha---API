@@ -12,6 +12,9 @@
 - pip install django-rest-knox
 - pip install cloudinary
 - pip install django-rest-auth
+- pip install geoip2
+- pip install wheel
+- pip install pandas
 
 # urls
 
