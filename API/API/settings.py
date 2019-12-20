@@ -183,3 +183,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# geo requirements
+# https://docs.djangoproject.com/pt-br/3.0/ref/contrib/gis/gdal/
