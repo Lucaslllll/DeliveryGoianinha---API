@@ -156,15 +156,11 @@ class MensagensRestaurante(generics.RetrieveAPIView):
         if bool(self.get_queryset()):
             serializer = self.serializer_class(data=request.data, context={'request':request})
             serializer.is_valid(raise_exception=True)
+            
             try:
                 restaurante = Restaurante.objects.get(pk=kwargs['restaurante'])
             except Restaurante.DoesNotExist:
                 return Response("Restaurante não existente")
-
-            try:
-                user = User.objects.get(pk=kwargs['cliente'])
-            except Restaurante.DoesNotExist:
-                return Response("Cliente não existente")
         else:
             restaurante = None
 
@@ -174,12 +170,13 @@ class MensagensRestaurante(generics.RetrieveAPIView):
         else:
             dic = {}; n = 0;
 
-            for pk in Mensagem.objects.filter(restaurante=restaurante.pk, cliente=user.pk).values():
+            for pk in Mensagem.objects.filter(restaurante=restaurante.pk).values():
                 dic[n] = pk['id']
                 n += 1
             lista = [None]*len(dic); n = 0;
 
             # dic dentro da lista
+
 
             for i in dic.values():
                 mensagem = Mensagem.objects.get(pk=i)
@@ -196,9 +193,38 @@ class MensagensRestaurante(generics.RetrieveAPIView):
                     'lida': mensagem.lida,
                 }
                 n += 1
-        
+            
 
-            return Response({
-                "restaurante": restaurante.nome,
-                "cardapio": lista
-            })
+            # recuperar nomes de restaurantes
+            user = User.objects.all()
+            nomes = [None]*len(user); index = 0;
+
+            for i in user.values():
+                for x in range(0, len(lista)):
+                    if i['username'] == lista[x]['cliente']:
+                        nomes[index] = i['username']
+                    
+
+                    # print(nomes)
+                index += 1
+            # -------------------------------------------------- #
+
+            dicReal = {}       
+            for i in nomes:    
+                # index = 0;
+                for x in range(0, len(lista)):
+                    if lista[x]['cliente'] == i:
+                        u = User.objects.get(username=lista[x]['cliente'])
+                        msg = Mensagem.objects.filter(restaurante=restaurante.pk, cliente=u.pk)
+                        quantidade = len(msg)
+                        dicReal[i+" quantidade de mensagens"] = len(msg)
+
+                        # print("|||||||||||")      
+                        # print(quantidade)
+                        # print("|||||||||||")
+                    # index += 1
+
+
+
+            dic = {'cliente':nomes, 'mensagens': lista, 'total mensagens': dicReal}
+            return Response(dic)
