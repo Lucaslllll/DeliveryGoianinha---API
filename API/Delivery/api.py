@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from .serializers import (
-    UserSerializer, UsuarioSerializer, UsuarioFNSerializer, RestauranteSerializer, FotosRestauranteSerializer, 
+    UserSerializer, UsuarioSerializer, UsuarioFNSerializer, RestauranteSerializer, RestauranteFNSerializer, FotosRestauranteSerializer, 
     ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
     ClassificacaoUsuarioSerializer, ClassificacaoUsuarioFNSerializer, ComidaSerializer, IngredientesSerializer, 
     CodimentosSerializer, TamanhoSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
@@ -460,3 +460,43 @@ class Buscar(generics.RetrieveAPIView):
                 "cardapio": lista2
             })
 
+
+class PegarDestaques(generics.RetrieveAPIView):
+    queryset = Cardapio.objects.all()
+    serializer_class = FiltrarCardapioSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            
+            restaurante = Restaurante.objects.get(slug__contains=kwargs['restaurante_slug'])
+            cardapio = Cardapio.objects.filter(restaurante=restaurante.pk, destaque=True)
+        else:
+            cardapio = None
+
+        if cardapio == None:
+            return Response("Não há destaques nesse restaurante")
+        else:
+            dic = {}; n = 0;
+            for pk in cardapio.values():
+                dic[n] = pk['id']
+                n += 1
+            lista = [None]*len(dic); n = 0;
+
+            for i in dic.values():
+                cardapio = Cardapio.objects.get(pk=i)
+
+
+                lista[n] = { 
+                    'id': cardapio.id,
+                    'restaurante': cardapio.restaurante.nome,
+                    'nome': cardapio.nome,
+                    'preco': cardapio.preco,
+                    'quantidade': cardapio.quantidade,
+                    'foto': cardapio.foto.url
+                }
+                n += 1
+
+            dic = {'restaurantes': restaurante.nome, 'cardapios': lista}
+            return Response(dic)

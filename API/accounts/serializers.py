@@ -7,8 +7,14 @@ from rest_auth.serializers import UserDetailsSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+from .models import Codigo
 
 
+
+class CodigoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Codigo
+        fields = '__all__'
 
 
 # serializer do usuario 

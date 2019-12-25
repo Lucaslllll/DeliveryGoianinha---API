@@ -46,6 +46,11 @@ class RestauranteSerializer(serializers.ModelSerializer):
         representation['foto'] = instance.foto.url
         return representation
 
+
+class RestauranteFNSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurante
+        fields = 'id'
         
 
 class PedidoSerializer(serializers.ModelSerializer):

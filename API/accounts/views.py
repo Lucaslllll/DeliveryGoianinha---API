@@ -14,7 +14,7 @@ class CustomAuthToken(ObtainAuthToken):
         return Response({
 
             'token': token.key,
-        
+        	
         })
 
 

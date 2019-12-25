@@ -1,8 +1,9 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import (UserSerializer, UserFNSerializer, RegisterSerializer, LoginSerializer, 
-                          VerifySerializer, LogoutSerializer, ResetSerializer, ChangePasswordSerializer)
+from .serializers import (CodigoSerializer, UserSerializer, UserFNSerializer, RegisterSerializer,
+                          LoginSerializer, VerifySerializer, LogoutSerializer, 
+                          ResetSerializer, ChangePasswordSerializer)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
@@ -12,10 +13,16 @@ from django.core import mail
 
 from rest_framework import viewsets, permissions, generics
 from django.template.loader import render_to_string
-from .utils import email_client
+from .utils import email_client, conferir
 from .tokens import account_activation_token
 
+from .models import Codigo
 
+
+
+class CodigoViewSet(viewsets.ModelViewSet):
+    queryset = Codigo.objects.all()
+    serializer_class = CodigoSerializer
 
 # API do registro
 class RegistrarAPI(generics.GenericAPIView):
@@ -157,6 +164,27 @@ class EmailList(generics.GenericAPIView):
         email_client(request, user)
         return Response("Email enviado")
         
+#pc, antigo
+
+# class EmailConfirme(generics.RetrieveAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserFNSerializer
+
+#     def retrieve(self, request, *args, **kwargs):
+#         if bool(self.get_queryset()):
+#             serializer = self.serializer_class(data=request.data, context={'request':request})
+#             serializer.is_valid(raise_exception=True)
+
+#             try:
+#                 user = User.objects.get(pk=kwargs['pk'])
+#             except User.DoesNotExist:
+#                 return Response("Não existe usuário")
+            
+
+#             if user is not None and account_activation_token.check_token(user, kwargs['token']):
+#                 return Response(True,)
+#             else:
+#                 return Response(False,)
 
 class EmailConfirme(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -167,16 +195,20 @@ class EmailConfirme(generics.RetrieveAPIView):
             serializer = self.serializer_class(data=request.data, context={'request':request})
             serializer.is_valid(raise_exception=True)
 
+
             try:
                 user = User.objects.get(pk=kwargs['pk'])
             except User.DoesNotExist:
                 return Response("Não existe usuário")
             
-
-            if user is not None and account_activation_token.check_token(user, kwargs['token']):
+            # account_activation_token.check_token(user, kwargs['token'])
+            
+            if user is not None and conferir(user, kwargs['token']):
                 return Response(True,)
             else:
                 return Response(False,)
+
+
 
 class ChangePassword(generics.GenericAPIView):
     serializer_class = ChangePasswordSerializer

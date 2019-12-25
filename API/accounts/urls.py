@@ -3,15 +3,15 @@ from django.urls import include
 from . import api, views, utils
 from django.urls import path
 
-# from rest_framework import routers
-# router = routers.DefaultRouter()
+from rest_framework import routers
+router = routers.DefaultRouter()
 
-# router.register('recovery', api.RecoveryViewSet, 'recovery')
-# urlpatterns = router.urls
+router.register('api/codigo', api.CodigoViewSet, 'codigo')
+urlpatterns = router.urls
 
 
 
-urlpatterns = [
+urlpatterns += [
 	path('api/auth/register', api.RegistrarAPI.as_view(), name='register'),
 	path('api/auth/login', api.LoginAPI.as_view(), name='login'),
 	path('api/auth/user', api.UserAPI.as_view(), name='user'),

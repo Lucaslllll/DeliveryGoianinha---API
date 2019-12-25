@@ -1,6 +1,7 @@
 {% autoescape off %}
 Olá {{ user.username }},
-Por favor clique no link para confirmar sua redefinição de senha,
-http://localhost:8000/recovery-confirme/{{user.id}}/{{token}}
+Por favor utilize o código para confirmar sua redefinição de senha,
+
+AQUI ESTÁ SEU CÓDIGO {{codigo}}
 
 {% endautoescape %}

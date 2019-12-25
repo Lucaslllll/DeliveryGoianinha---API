@@ -7,11 +7,39 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
+from random import choice
+from .models import Codigo
+
+
+# gera e confere a senha do usuário
+
+def gera_senha(tamanho, user):
+    caracters = '0123456789abcdefghijlmnopqrstuwvxz'
+    senha = ''
+    for char in range(0, tamanho):
+            senha += choice(caracters)
+    Codigo.objects.create(code=senha, user=user)
+    return  senha
+
+def conferir(user, code):
+
+    try:
+        codigo = Codigo.objects.get(user=user, code=code)
+    except Codigo.DoesNotExist:
+        codigo = None
+
+    if codigo != None:
+        return True
+    else:
+        return False
+
+# Manda email para usuário
 
 def email_client(request, user):
     msg_html = render_to_string('email.html', {
         'user': user,
-        'token':account_activation_token.make_token(user),
+        'codigo': gera_senha(5, user)
+        # 'token':account_activation_token.make_token(user),
     })
     connection = mail.get_connection()
 
@@ -19,7 +47,7 @@ def email_client(request, user):
     connection.open()
     
     email1 = mail.EmailMessage(
-        'Hello',
+        'EntreGO - Suporte',
         msg_html,
         'entrego.oficialdelivery@gmail.com',
         [user.email, ],
