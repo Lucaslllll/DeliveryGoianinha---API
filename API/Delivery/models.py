@@ -186,6 +186,10 @@ class Codimentos_Restaurante(models.Model):
     codimentos = models.ForeignKey(Codimentos, on_delete=models.CASCADE, blank=True, null=True)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)
 
+    def __str__(self):
+        return self.restaurante.nome
+
+
 class Comentario(models.Model):
     autor = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, blank=True, null=True)

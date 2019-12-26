@@ -5,13 +5,15 @@ from .serializers import (
     UserSerializer, UsuarioSerializer, UsuarioFNSerializer, RestauranteSerializer, RestauranteFNSerializer, FotosRestauranteSerializer, 
     ClassificacaoRestauranteSerializer, ClassificacaoRestauranteFNSerializer, 
     ClassificacaoUsuarioSerializer, ClassificacaoUsuarioFNSerializer, ComidaSerializer, IngredientesSerializer, 
-    CodimentosSerializer, TamanhoSerializer, PedidoSerializer, PedidoRestauranteSerializer, 
-    ComentarioSerializer, TagRestauranteSerializer, TagSerializer, TagRestauranteFiltrarSerializer, CardapioSerializer,
-    FiltrarComentarioSerializer, FiltrarCardapioSerializer
+    CodimentosSerializer, CodimentosRestauranteSerializer, TamanhoSerializer, PedidoSerializer, 
+    PedidoRestauranteSerializer, ComentarioSerializer, TagRestauranteSerializer, TagSerializer,
+    TagRestauranteFiltrarSerializer, CardapioSerializer,FiltrarComentarioSerializer, 
+    FiltrarCardapioSerializer, CodimentosRestauranteFNSerializer
 )
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
                     Fotos_Comida, Fotos_Restaurante, Ingredientes, Tipo, Tamanho, Codimentos,
-                    Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag, Tags, Cardapio)
+                    Codimentos_Restaurante, Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag,
+                    Tags, Cardapio)
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -128,6 +130,10 @@ class IngredientesViewSet(viewsets.ModelViewSet):
 class CodimentosViewSet(viewsets.ModelViewSet):
     queryset = Codimentos.objects.all()
     serializer_class = CodimentosSerializer
+
+class CodimentosRestauranteViewSet(viewsets.ModelViewSet):
+    queryset = Codimentos_Restaurante.objects.all()
+    serializer_class = CodimentosRestauranteSerializer
 
 class TamanhoViewSet(viewsets.ModelViewSet):
     queryset = Tamanho.objects.all()
@@ -267,6 +273,56 @@ class PegarPedidosRestaurante(generics.RetrieveAPIView):
                 "pedidos": lista
             })
 
+class PegarCodimentosRestaurante(generics.RetrieveAPIView):
+    queryset = Codimentos_Restaurante.objects.all()
+    serializer_class = CodimentosRestauranteFNSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+
+            try:
+                restaurante = Restaurante.objects.get(slug=kwargs['restaurante_slug'])
+            except Restaurante.DoesNotExist:
+                restaurante = None
+
+            codimentos_restaurante = Codimentos_Restaurante.objects.filter(restaurante=restaurante.pk)
+            
+        else:
+            restaurante = None
+
+        if restaurante == None:
+            return Response("Sem dados")
+        else:
+            # print(restaurante_tag.restaurante_id)
+            dic = {}; n = 0;
+
+            for pk in codimentos_restaurante.values():
+                dic[n] = pk['id']
+                n += 1
+            lista = [None]*len(dic); n = 0;
+
+            # dic dentro da lista
+
+            for i in dic.values():
+                codimentos = Codimentos.objects.get(pk=i)
+
+
+                # sempre colocar listas
+                lista[n] = { 
+                    'id': codimentos.id,
+                    'nome': codimentos.nome,
+                    'preco': codimentos.preco,
+                }
+                n += 1      
+                   
+
+            return Response({
+                "restaurante": restaurante.nome,
+                "codimentos": lista
+            })
+
 
 class PegarComentariosRestaurante(generics.RetrieveAPIView):
     queryset = Comentario.objects.all()
@@ -305,6 +361,7 @@ class PegarComentariosRestaurante(generics.RetrieveAPIView):
                 lista[n] = { 
                     'id': comentario.id,
                     'restaurante': comentario.restaurante.nome,
+                    'id_autor': comentario.autor.id,
                     'autor': comentario.autor.username,
                     'titulo': comentario.titulo,
                     'detalhes': comentario.descricao,
