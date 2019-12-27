@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register('api/usuario', api.UsuarioViewSet, 'usuario')
 router.register('api/classificacao_usuario', api.ClassificacaoUsuarioViewSet, 'classficacao_usuario')
 router.register('api/restaurante', api.RestauranteViewSet, 'restaurante')
+router.register('api/cor', api.CorViewSet, 'cor')
 router.register('api/classificacao_restaurante', api.ClassificacaoRestauranteViewSet, 'classificacao_restaurante')
 router.register('api/comida', api.ComidaViewSet, 'comida')
 router.register('api/ingredientes', api.IngredientesViewSet, 'ingredientes')
@@ -30,7 +31,8 @@ urlpatterns += [
 	path('api/classificacao_restaurante_final/<str:restaurante_slug>', api.ClassificacaoRestauranteFinal.as_view(), name='classificacao_restaurante_final'),
 	path('api/classificacao_usuario_final/<int:pk>', api.ClassificacaoUsuarioFinal.as_view(), name='classificacao_usuario_final'),
 	path('api/filtrar_restaurante/<str:nome>', api.FiltrarTagRestaurante.as_view(), name='tag_filtro'),
-	
+	path('api/filtrar_comida/<str:nome>', api.FiltrarTagComida.as_view(), name='tag_comida'),
+
 	path('api/foto_restaurante', views.FotosRestauranteCloud.as_view(), name='foto_restaurante'),
 	path('api/foto_restaurante/<int:pk>', views.FotosRestauranteCloudUD.as_view(), name='foto_restauranteUD'),
 	

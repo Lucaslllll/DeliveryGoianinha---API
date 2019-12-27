@@ -3,7 +3,7 @@ from .models import (
     Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
     Fotos_Comida, Fotos_Restaurante, Ingredientes, Tipo, Tamanho, Codimentos, 
     Codimentos_Restaurante, Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag,
-    Tags, Cardapio
+    Tags, Cardapio, Cor, Comida_Tag
 )
 from django.contrib.auth.models import User
 from cloudinary.templatetags import cloudinary
@@ -53,6 +53,10 @@ class RestauranteFNSerializer(serializers.ModelSerializer):
         model = Restaurante
         fields = 'id'
         
+class CorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cor
+        fields = '__all__'
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -184,3 +188,14 @@ class TagRestauranteFiltrarSerializer(serializers.ModelSerializer):
         model = Tags
         fields = ['id']
 
+
+class TagComidaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comida_Tag
+        fields = '__all__'
+
+
+class TagComidaFiltrarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tags
+        fields = ['id']

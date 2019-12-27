@@ -8,12 +8,13 @@ from .serializers import (
     CodimentosSerializer, CodimentosRestauranteSerializer, TamanhoSerializer, PedidoSerializer, 
     PedidoRestauranteSerializer, ComentarioSerializer, TagRestauranteSerializer, TagSerializer,
     TagRestauranteFiltrarSerializer, CardapioSerializer,FiltrarComentarioSerializer, 
-    FiltrarCardapioSerializer, CodimentosRestauranteFNSerializer
+    FiltrarCardapioSerializer, CodimentosRestauranteFNSerializer, CorSerializer, TagComidaSerializer,
+    TagComidaFiltrarSerializer
 )
 from .models import (Usuario, Restaurante, Classificacao_Usuario, Classificacao_Restaurante, 
                     Fotos_Comida, Fotos_Restaurante, Ingredientes, Tipo, Tamanho, Codimentos,
                     Codimentos_Restaurante, Pedido, Pedido_Restaurante, Comentario, Restaurante_Tag,
-                    Tags, Cardapio)
+                    Tags, Cardapio, Cor, Comida_Tag)
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -139,6 +140,10 @@ class TamanhoViewSet(viewsets.ModelViewSet):
     queryset = Tamanho.objects.all()
     serializer_class = TamanhoSerializer
 
+class CorViewSet(viewsets.ModelViewSet):
+    queryset = Cor.objects.all()
+    serializer_class = CorSerializer
+
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
@@ -202,6 +207,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
                     'status': Restaurante.objects.get(pk=i).status,
+                    'cor': Restaurante.objects.get(pk=i).cor,
                     'foto': Restaurante.objects.get(pk=i).foto.url,
                 }
                 n += 1                   
@@ -211,6 +217,51 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                 "restaurantes": lista
             })
 
+
+class FiltrarTagComida(generics.RetrieveAPIView):
+    queryset = Tags.objects.all()
+    serializer_class= TagComidaFiltrarSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if bool(self.get_queryset()):
+            serializer = self.serializer_class(data=request.data, context={'request':request})
+            serializer.is_valid(raise_exception=True)
+            try:
+                tags = Tags.objects.get(nome=kwargs['nome'])
+            except Tags.DoesNotExist:
+                return Response("Tag não existente")
+            
+        else:
+            tags = None
+
+        if tags == None:
+            return Response("Sem dados")
+        else:
+            # print(restaurante_tag.restaurante_id)
+            dic = {}; n = 0;
+
+            for pk in Comida_Tag.objects.filter(tag=tags.pk).values():
+                dic[n] = pk['cardapio_id']
+                n += 1
+            lista = [None]*len(dic); n = 0
+
+            # dic dentro da lista
+            for i in dic.values():
+                lista[n] = { 
+                    'id': Cardapio.objects.get(pk=i).id,
+                    'restaurante': Cardapio.objects.get(pk=i).restaurante.nome,
+                    'nome': Cardapio.objects.get(pk=i).nome,
+                    'preco': Cardapio.objects.get(pk=i).preco,
+                    'quantidade': Cardapio.objects.get(pk=i).quantidade,
+                    'destaque': Cardapio.objects.get(pk=i).destaque,
+                    'foto': Cardapio.objects.get(pk=i).foto.url,
+                }
+                n += 1                   
+
+
+            return Response({
+                "comidas": lista
+            })
 
 
     # def dados(self, *args, **kwargs):
@@ -507,14 +558,15 @@ class Buscar(generics.RetrieveAPIView):
                     'nome': Restaurante.objects.get(pk=i).nome,
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
+                    'cor': Restaurante.objects.get(pk=i).cor,
                     'status': Restaurante.objects.get(pk=i).status,
                     'foto': Restaurante.objects.get(pk=i).foto.url,
                 }
                 n += 1
 
             return Response({
-                "restaurante": lista1,
-                "cardapio": lista2
+                "restaurante": lista2,
+                "cardapio": lista1
             })
 
 

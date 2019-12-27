@@ -73,6 +73,12 @@ class Tags(models.Model):
     def __str__(self):
         return self.nome
 
+class Cor(models.Model):
+    nome = models.CharField(max_length=500, unique=True)
+    
+    def __str__(self):
+        return self.nome
+
 class Restaurante(models.Model):
     nome = models.CharField(max_length=500)
     cnpj = models.IntegerField(null=True)
@@ -93,6 +99,8 @@ class Restaurante(models.Model):
         format="png",
     )
     dias = models.CharField(max_length=500, null=True)
+    cor = models.ForeignKey(Cor, on_delete=True, null=True, blank=True)
+
     # tags = models.ManyToManyField(Tags, through='Restaurante_Tag')
 
     def __str__(self):
@@ -164,6 +172,12 @@ class Cardapio(models.Model):
         return self.nome
 
 
+class Comida_Tag(models.Model):
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
+    cardapio = models.ForeignKey(Cardapio, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.tag.nome
 
 
 class Pedido(models.Model):
