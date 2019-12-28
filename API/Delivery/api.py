@@ -207,7 +207,7 @@ class FiltrarTagRestaurante(generics.RetrieveAPIView):
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
                     'status': Restaurante.objects.get(pk=i).status,
-                    'cor': Restaurante.objects.get(pk=i).cor,
+                    'cor': Restaurante.objects.get(pk=i).cor.nome,
                     'foto': Restaurante.objects.get(pk=i).foto.url,
                 }
                 n += 1                   
@@ -558,7 +558,7 @@ class Buscar(generics.RetrieveAPIView):
                     'nome': Restaurante.objects.get(pk=i).nome,
                     'descricao_breve': Restaurante.objects.get(pk=i).descricao_breve,
                     'slug': Restaurante.objects.get(pk=i).slug,
-                    'cor': Restaurante.objects.get(pk=i).cor,
+                    'cor': Restaurante.objects.get(pk=i).cor.nome,
                     'status': Restaurante.objects.get(pk=i).status,
                     'foto': Restaurante.objects.get(pk=i).foto.url,
                 }
