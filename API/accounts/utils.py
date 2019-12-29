@@ -35,10 +35,11 @@ def conferir(user, code):
 
 # Manda email para usuário
 
-def email_client(request, user):
+def email_client(request, user, info):
     msg_html = render_to_string('email.html', {
         'user': user,
-        'codigo': gera_senha(5, user)
+        'codigo': gera_senha(5, user),
+        'info': info
         # 'token':account_activation_token.make_token(user),
     })
     connection = mail.get_connection()

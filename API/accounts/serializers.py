@@ -34,8 +34,7 @@ class UserFNSerializer(serializers.Serializer):
         model = User
         fields = ('id', )
 
-# serializer para registro
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterEmailSerializer(serializers.ModelSerializer):
     User._meta.get_field('email')._unique = True
     User._meta.get_field('username')._unique = False
     class Meta:
@@ -45,9 +44,34 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'], validated_data['email'],
-                                        validated_data['password'])
+                                        validated_data['password'], is_active=False)
 
         return user
+
+
+# serializer para registro
+class RegisterSerializer(serializers.Serializer):
+    codigo = serializers.CharField()
+
+    def validate(self, data):
+        codigo = data['codigo']
+
+        try:
+            codigo = Codigo.objects.get(code=codigo)
+        except Codigo.DoesNotExist:
+            codigo = None
+
+        if codigo == None:
+            raise serializers.ValidationError("Código incorreto")
+        else:
+            try:
+                user = User.objects.get(pk=codigo.user.pk)
+                return user
+            except User.DoesNotExist:
+                return serializers.ValidationError("Não há usuário")
+        
+        
+
 
 # serializer para autenticação
 class LoginSerializer(serializers.Serializer):

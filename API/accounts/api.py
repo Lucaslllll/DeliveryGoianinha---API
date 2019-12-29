@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import (CodigoSerializer, UserSerializer, UserFNSerializer, RegisterSerializer,
                           LoginSerializer, VerifySerializer, LogoutSerializer, 
-                          ResetSerializer, ChangePasswordSerializer)
+                          ResetSerializer, ChangePasswordSerializer, RegisterEmailSerializer)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
@@ -24,21 +24,41 @@ class CodigoViewSet(viewsets.ModelViewSet):
     queryset = Codigo.objects.all()
     serializer_class = CodigoSerializer
 
-# API do registro
-class RegistrarAPI(generics.GenericAPIView):
-    serializer_class = RegisterSerializer
+#API do registro 1 parte
+class RegistrarEmailAPI(generics.GenericAPIView):
+    serializer_class = RegisterEmailSerializer
+
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
+        print(user)
+        info = "seu email"
+        email_client(request, user, info)
+        return Response("Email enviado")
+
+# API do registro 2 parte
+class RegistrarAPI(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+
+        user = User.objects.get(pk=user.pk)
+        user.is_active = True
+        user.save()
+
         token = Token.objects.create(user=user)
+        
         return Response({
 
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": token.key
-
+            "token": token.key,
+            "estado": user.is_active
         }) 
 
 
@@ -161,7 +181,8 @@ class EmailList(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        email_client(request, user)
+        info = "sua redefinição de senha"
+        email_client(request, user, info)
         return Response("Email enviado")
         
 #pc, antigo
