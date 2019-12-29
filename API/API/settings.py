@@ -184,5 +184,22 @@ EMAIL_USE_TLS = True
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# username no unique
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+
+AUTHENTICATION_BACKENDS = (
+    'accounts.backends.EmailAuthBackend', 
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+# AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
 # geo requirements
 # https://docs.djangoproject.com/pt-br/3.0/ref/contrib/gis/gdal/

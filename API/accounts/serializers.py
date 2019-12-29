@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+# from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_auth.serializers import UserDetailsSerializer
 
@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from .models import Codigo
-
+from .backends import EmailAuthBackend
 
 
 class CodigoSerializer(serializers.ModelSerializer):
@@ -63,9 +63,10 @@ class LoginSerializer(serializers.Serializer):
             user = None
 
         if user != None:
-            user = authenticate(username=user.username, password=data['password'])
-            if user and user.is_active:
-                 return user
+            users = EmailAuthBackend.authenticate(self, username=email, password=data['password'])
+            if users and user.is_active:
+                # print(users.email)
+                return users.email
             raise serializers.ValidationError("Dados errados")
         else:
             raise serializers.ValidationError("Dados errados")

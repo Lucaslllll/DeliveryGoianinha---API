@@ -51,9 +51,9 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        user = serializer.validated_data
+        email = serializer.validated_data
 
-        user_ = User.objects.get(username=user)
+        user_ = User.objects.get(email=email)
         
         try: 
             token = Token.objects.create(user=user_)
@@ -65,7 +65,7 @@ class LoginAPI(generics.GenericAPIView):
 
         return Response({
 
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "user": UserSerializer(user_, context=self.get_serializer_context()).data,
             "token": token.key,
             "estado": True
         })
