@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import (CodigoSerializer, UserSerializer, UserFNSerializer, RegisterSerializer,
-                          LoginSerializer, VerifySerializer, LogoutSerializer, 
+                          LoginSerializer, VerifySerializer, LogoutSerializer, RegisterConfirmeSerializer,
                           ResetSerializer, ChangePasswordSerializer, RegisterEmailSerializer)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -17,6 +17,7 @@ from .utils import email_client, conferir
 from .tokens import account_activation_token
 
 from .models import Codigo
+from .utils import gera_senha_email, conferir_email, email_client_email
 
 
 
@@ -32,24 +33,42 @@ class RegistrarEmailAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        
+        email = serializer.validated_data
 
-        print(user)
         info = "seu email"
-        email_client(request, user, info)
+        email_client_email(request, email, info)
         return Response("Email enviado")
 
 # API do registro 2 parte
+class RegistrarConfirmeAPI(generics.GenericAPIView):
+    serializer_class = RegisterConfirmeSerializer
+
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        codigo = serializer.validated_data
+
+        if codigo == None:
+            return Response(False)
+
+        return Response({"estado": True, "codigo": codigo.code})
+
+
+# API do registro 3 parte
 class RegistrarAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
+        user = serializer.save()
+
+        codigo = Codigo.objects.get(code=serializer.validated_data['codigo'])
 
         user = User.objects.get(pk=user.pk)
-        user.is_active = True
+        user.email = codigo.email
         user.save()
 
         token = Token.objects.create(user=user)

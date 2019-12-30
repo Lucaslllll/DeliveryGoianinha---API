@@ -57,4 +57,51 @@ def email_client(request, user, info):
     email1.send()
 
 
+#
+#
+# confirmar pelo email
+#
+#
 
+def gera_senha_email(tamanho, email):
+    caracters = '0123456789'
+    senha = ''
+    for char in range(0, tamanho):
+            senha += choice(caracters)
+    Codigo.objects.create(code=senha, email=email['email'])
+    return senha
+
+def conferir_email(user, code):
+
+    try:
+        codigo = Codigo.objects.get(user=user, code=code)
+    except Codigo.DoesNotExist:
+        codigo = None
+
+    if codigo != None:
+        return True
+    else:
+        return False
+
+
+def email_client_email(request, email, info):
+    msg_html = render_to_string('email.html', {
+        'codigo': gera_senha_email(5, email),
+        'info': info
+        # 'token':account_activation_token.make_token(user),
+    })
+    connection = mail.get_connection()
+
+    
+    connection.open()
+    
+
+
+    email1 = mail.EmailMessage(
+        'EntreGO - Suporte',
+        msg_html,
+        'entrego.oficialdelivery@gmail.com',
+        [email['email'], ],
+        connection=connection,
+    )
+    email1.send()

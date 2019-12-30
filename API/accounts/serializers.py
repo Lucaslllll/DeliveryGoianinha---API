@@ -36,10 +36,9 @@ class UserFNSerializer(serializers.Serializer):
 
 class RegisterEmailSerializer(serializers.ModelSerializer):
     User._meta.get_field('email')._unique = True
-    User._meta.get_field('username')._unique = False
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('email',)
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -48,9 +47,12 @@ class RegisterEmailSerializer(serializers.ModelSerializer):
 
         return user
 
+    # def validate(self, data):
+
+
 
 # serializer para registro
-class RegisterSerializer(serializers.Serializer):
+class RegisterConfirmeSerializer(serializers.Serializer):
     codigo = serializers.CharField()
 
     def validate(self, data):
@@ -64,12 +66,22 @@ class RegisterSerializer(serializers.Serializer):
         if codigo == None:
             raise serializers.ValidationError("Código incorreto")
         else:
-            try:
-                user = User.objects.get(pk=codigo.user.pk)
-                return user
-            except User.DoesNotExist:
-                return serializers.ValidationError("Não há usuário")
+            return codigo
         
+
+class RegisterSerializer(serializers.ModelSerializer):
+    User._meta.get_field('username')._unique = False
+    codigo = serializers.CharField()
+    class Meta:
+        model = User
+        fields = ('id', 'codigo', 'username', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(validated_data['username'], validated_data['password'],
+                                        is_active=True)
+
+        return user
         
 
 

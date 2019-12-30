@@ -10,7 +10,8 @@ from django.contrib.auth.models import User, AbstractUser
     
 class Codigo(models.Model):
     code = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    email = models.EmailField(max_length=200, null=True)
     posting_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

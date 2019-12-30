@@ -13,8 +13,9 @@ urlpatterns = router.urls
 
 urlpatterns += [
 	path('api/auth/register_email', api.RegistrarEmailAPI.as_view(), name='register_email'),
+	path('api/auth/register_confirme', api.RegistrarConfirmeAPI.as_view(), name='register_confime'),
 	path('api/auth/register', api.RegistrarAPI.as_view(), name='register'),
-	
+
 	path('api/auth/login', api.LoginAPI.as_view(), name='login'),
 	path('api/auth/user', api.UserAPI.as_view(), name='user'),
 	path('logout', api.Logout.as_view(), name='logout'),
