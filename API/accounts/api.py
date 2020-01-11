@@ -67,9 +67,15 @@ class RegistrarAPI(generics.GenericAPIView):
 
         codigo = Codigo.objects.get(code=serializer.validated_data['codigo'])
 
+
         user = User.objects.get(pk=user.pk)
         user.email = codigo.email
         user.save()
+
+        codigos = Codigo.objects.filter(email=codigo.email)
+
+        for cod_del in codigos:
+            cod_del.delete()
 
         token = Token.objects.create(user=user)
         
