@@ -99,7 +99,7 @@ class Restaurante(models.Model):
         format="png",
     )
     dias = models.CharField(max_length=500, null=True)
-    cor = models.ForeignKey(Cor, on_delete=True, null=True, blank=True)
+    cor = models.ForeignKey(Cor, on_delete=models.CASCADE, null=True, blank=True)
 
     # tags = models.ManyToManyField(Tags, through='Restaurante_Tag')
 

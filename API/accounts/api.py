@@ -37,8 +37,22 @@ class RegistrarEmailAPI(generics.GenericAPIView):
         email = serializer.validated_data
 
         info = "seu email"
+        
+        # confirme = True
+
+        # for user_email in User.objects.all():
+        #     if user_email.email == email:
+        #         confirme = False
+        #         break
+
+        # if confirme == True:
+        
         email_client_email(request, email, info)
         return Response("Email enviado")
+        
+        # else:
+        #     return Response("Email já cadastrado")
+
 
 # API do registro 2 parte
 class RegistrarConfirmeAPI(generics.GenericAPIView):
