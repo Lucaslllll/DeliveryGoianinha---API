@@ -15,6 +15,7 @@
 - pip install geoip2
 - pip install wheel
 - pip install pandas
+- pip install --upgrade django-cors-headers
 
 # urls
 
