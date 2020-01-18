@@ -16,6 +16,7 @@
 - pip install wheel
 - pip install pandas
 - pip install --upgrade django-cors-headers
+- pip install python-memcached
 
 # urls
 
