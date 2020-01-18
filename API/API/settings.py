@@ -96,6 +96,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'chat.middleware.ActiveUserMiddleware',
 ]
 
 ROOT_URLCONF = 'API.urls'
@@ -199,7 +200,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+USER_ONLINE_TIMEOUT = 300
+
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
 # AUTH_USER_MODEL = 'accounts.CustomUser'
+
 
 
 # geo requirements

@@ -7,6 +7,10 @@ from cloudinary.models import CloudinaryField
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser
 
+from django.conf import settings
+import datetime
+
+from django.core.cache import cache
 
 def get_path_restaurante(self, instance, filename):
     return os.path.join('Fotos/Restaurantes', str(instance.id), filename)
@@ -66,6 +70,18 @@ class Usuario(models.Model):
     def __str__(self):
         return self.user.username
 
+    def last_seen(self):
+        return cache.get('last_seen_%s' % self.user.username)
+    
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > (self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT)):
+                return False
+            else:
+                return True
+        else: 
+            return False
 
 class Tags(models.Model):
     nome = models.CharField(max_length=500, unique=True)
